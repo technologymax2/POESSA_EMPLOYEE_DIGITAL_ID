@@ -10,7 +10,7 @@ function Login({
   logoImg 
 }) {
   return (
-    <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 w-full">
+    <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 w-full max-w-md mx-auto">
       {/* ሎጎ እና ራእስ */}
       <div className="text-center mb-8">
         {logoImg && (
@@ -104,6 +104,7 @@ function Login({
           <p>
             አካውንት የለዎትም?{' '}
             <button 
+              type="button"
               onClick={() => setAuthMode('signup')} 
               className="text-blue-600 font-semibold hover:underline focus:outline-none"
             >
@@ -114,6 +115,7 @@ function Login({
           <p>
             ቀድሞ አካውንት አለዎት?{' '}
             <button 
+              type="button"
               onClick={() => setAuthMode('login')} 
               className="text-blue-600 font-semibold hover:underline focus:outline-none"
             >
