@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Footer from './Footer';
 
 const IMGBB_API_KEY = "ebd592608f4dba1e8271bec8e920c408";
-const FRONTEND_URL = "https://max-technology-website.vercel.app";
+
 
 function HRDashboard({ user, handleLogout, API_BASE_URL }) {
   const [employeeList, setEmployeeList] = useState([]);
@@ -634,14 +634,14 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                   onClick={() => setPrintCardType('id-card')} 
                   className={`py-2 px-3 rounded-lg text-xs font-bold transition border ${printCardType === 'id-card' ? 'bg-[#0b192c] border-[#d4af37] text-white shadow-md' : 'bg-gray-900 border-gray-700 text-gray-300'}`}
                 >
-                  መደበኛ መታወቂያ (Standard ID)
+                  የደረት ባጅ
                 </button>
                 <button 
                   type="button" 
                   onClick={() => setPrintCardType('badge')} 
                   className={`py-2 px-3 rounded-lg text-xs font-bold transition border ${printCardType === 'badge' ? 'bg-[#0b192c] border-[#d4af37] text-white shadow-md' : 'bg-gray-900 border-gray-700 text-gray-300'}`}
                 >
-                  የደረት ባጅ (Chest Badge)
+                     መደበኛ መታወቂያ (Standard ID) (Chest Badge)
                 </button>
               </div>
             </div>
@@ -662,7 +662,7 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                             <span className="text-[9px] font-extrabold text-[#0b192c]">LOGO</span>
                           )}
                         </div>
-                        <h2 className="text-[11px] font-extrabold tracking-wider text-white">MAX TECHNOLOGY</h2>
+                        <h2 className="text-[11px] font-extrabold tracking-wider text-white">POESSA</h2>
                         <p className="text-[8px] text-[#d4af37] font-medium tracking-wide">EMPLOYEE ID CARD</p>
                       </div>
 
@@ -695,7 +695,7 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                       </div>
 
                       <div className="absolute bottom-0 left-0 w-full py-1.5 text-center text-[8px] text-gray-400 bg-[#07101a] border-t border-[#d4af37]/30 z-10">
-                        Max Technology Employee Card
+                        የግል ድርጅት ሰራተኞ ማህበራዊ ዋስትና አስተዳደር
                       </div>
                     </div>
                   </div>
@@ -803,7 +803,7 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                       </div>
 
                       <div className="bg-[#07101a] -mx-4 -mb-4 py-1 px-3 text-center border-t border-[#d4af37]/30 text-[8px] text-gray-400 relative z-10">
-                        Authorized Corporate Badge - Max Technology
+                        Authorized Corporate Badge - POESSA
                       </div>
                     </div>
                   </div>
@@ -829,7 +829,7 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                       </div>
 
                       <div className="bg-[#07101a] -mx-4 -mb-4 py-1.5 px-3 text-center border-t border-[#d4af37]/30 text-[8px] text-gray-400 relative z-10">
-                        Max Technology - Official Badge Identification
+                        POESSA - Official Badge Identification
                       </div>
                     </div>
                   </div>
