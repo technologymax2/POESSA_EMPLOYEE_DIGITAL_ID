@@ -663,7 +663,7 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                           )}
                         </div>
                         <h2 className="text-[11px] font-extrabold tracking-wider text-white">POESSA</h2>
-                        <p className="text-[8px] text-[#d4af37] font-medium tracking-wide">EMPLOYEE ID CARD</p>
+                        <p className="text-[8px] text-[#d4af37] font-medium tracking-wide">ይግል ድርጅት ሰራተኞች ማህበራዊ ዋስትና አስተዳደር</p>
                       </div>
 
                       <div className="flex flex-col items-center relative z-10 px-3 mt-0.5">
@@ -745,7 +745,7 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                       </div>
 
                       <div className="relative z-10 bg-[#07101a] -mx-3 -mb-3 py-1.5 px-2 text-center border-t border-[#d4af37]/30">
-                        <p className="text-[7.5px] text-gray-400">Authorized Employee ID - Max Technology</p>
+                        <p className="text-[7.5px] text-gray-400"> የግል ድርጅት ሰራተኞ ማህበራዊ ዋስትና አስተዳደር</p>
                       </div>
                     </div>
                   </div>
