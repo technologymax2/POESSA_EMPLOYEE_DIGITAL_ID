@@ -121,7 +121,7 @@ function App() {
         <nav className="w-full bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentScreen("home")}>
             <img src={logoImg} alt="Logo" className="w-10 h-10 rounded-full object-cover shadow" />
-            <span className="text-xl font-bold text-blue-600">Max Technology</span>
+            <span className="text-xl font-bold text-blue-600">POESSA</span>
           </div>
           <div className="flex items-center gap-3">
             <button 
@@ -145,7 +145,7 @@ function App() {
           <p className="text-lg text-gray-600">የሰራተኞች ዲጂታል መታወቂያ እና ማስተዋቂያ ሰሌዳ ማስተዳደሪያ ስርዓት</p>
         </header>
         <main className="max-w-7xl mx-auto px-6 py-10 w-full flex-grow">
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">የሠሯቸው ፕሮጀክቶች</h2>
+          <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">መለክቶች</h2>
           {projects.length === 0 ? (
             <p className="text-center text-gray-500">ምንም መረጃ የለም</p>
           ) : (
