@@ -96,7 +96,6 @@ function AdminDashboard({
     }
   };
 
-
   const handleSendAdminMessage = async () => {
     const txt = replyText["global_admin_chat"];
     if (!txt || !txt.trim()) return alert("እባክዎ ትክክለኛ መልዕክት ይጻፉ!");
@@ -132,8 +131,6 @@ function AdminDashboard({
       alert("ፎቶ ማውረድ አልተቻለም፦ " + err.message);
     }
   };
-
-
 
   const handleAddHRSubmit = async (e) => {
     e.preventDefault();
@@ -191,7 +188,6 @@ function AdminDashboard({
     }
   };
 
-
   const handleUpdateAdmin = async (e) => {
     e.preventDefault();
     try {
@@ -248,9 +244,6 @@ function AdminDashboard({
       alert("ማጥፋት አልተቻለም");
     }
   };
-
- 
-
 
   return (
     <div className="w-full max-w-7xl mx-auto p-2 sm:p-4 box-border relative text-white bg-[#0d0f12] min-h-screen">
@@ -324,14 +317,10 @@ function AdminDashboard({
           >
             👥 የሰው ሃብት (HR)
           </button>
-         
-         
         </div>
 
         {/* ዋናው የይዘት ማሳያ አካባቢ */}
         <div className="flex-1 min-w-0">
-
-         
 
           {/* 2. መልዕክቶች */}
           {activeTab === "messages" && (
@@ -479,8 +468,8 @@ function AdminDashboard({
             </div>
           )}
 
-
-
+        </div>
+      </div>
 
       {editingAdmin && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
