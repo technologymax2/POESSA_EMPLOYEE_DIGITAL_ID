@@ -745,10 +745,10 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                       </div>
 
                       <div className="relative z-10 bg-[#07101a] -mx-3 -mb-3 py-1.5 px-2 text-center border-t border-[#d4af37]/30">
-                        <p className="text-[7.5px] text-gray-400"> የግል ድርጅት ሰራተኞ ማህበራዊ ዋስትና አስተዳደር</p>
+                        <p className="text-[7.5px] text-gray-400"> Private Organizations Employees Social Security Administration </p>
                       </div>
                     </div>
-                  </div>
+                  </div
                 </>
               ) : (
                 <>
@@ -768,8 +768,8 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                             )}
                           </div>
                           <div>
-                            <h2 className="text-[11px] font-extrabold tracking-wider text-white">MAX TECHNOLOGY</h2>
-                            <p className="text-[8px] text-[#d4af37] font-medium">EMPLOYEE BADGE</p>
+                            <h2 className="text-[11px] font-extrabold tracking-wider text-white">POESSA</h2>
+                            <p className="text-[8px] text-[#d4af37] font-medium"> የግል ድርጅት ሰራተኞ ማህበራዊ ዋስትና አስተዳደር</p>
                           </div>
                         </div>
                         <div className="text-right text-[8px] text-gray-400">
@@ -803,7 +803,7 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                       </div>
 
                       <div className="bg-[#07101a] -mx-4 -mb-4 py-1 px-3 text-center border-t border-[#d4af37]/30 text-[8px] text-gray-400 relative z-10">
-                        Authorized Corporate Badge - POESSA
+                        የሰራተኛ መታወቂያ - POESSA
                       </div>
                     </div>
                   </div>
@@ -829,7 +829,7 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                       </div>
 
                       <div className="bg-[#07101a] -mx-4 -mb-4 py-1.5 px-3 text-center border-t border-[#d4af37]/30 text-[8px] text-gray-400 relative z-10">
-                        POESSA - Official Badge Identification
+                        POESSA - Private Organizations Employees Social Security Administration
                       </div>
                     </div>
                   </div>
