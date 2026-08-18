@@ -18,6 +18,8 @@ app.use(
   })
 );
 
+app.use(express.static(path.join(__dirname, "public")));
+
 const MONGO_URI = process.env.MONGO_URI;
 
 mongoose
@@ -55,16 +57,6 @@ app.use("/api", apiRoutes);
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({ success: true, message: "ሰርቨሩ ዝግጁ ነው!" });
-});
-
-// ==========================================
-// FRONTEND STATIC SERVING & CATCH-ALL ROUTE
-// ==========================================
-// የፍሮንትኤንድ ፎልደር ከባክኤንድ ጋር እንዲያያዝ ማድረግ
-app.use(express.static(path.join(__dirname, "../frontend/build")));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../frontend", "build", "index.html"));
 });
 
 const PORT = process.env.PORT || 10000;
