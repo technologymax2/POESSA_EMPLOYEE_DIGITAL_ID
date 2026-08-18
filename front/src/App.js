@@ -23,12 +23,6 @@ function App() {
     password: "",
   });
   const [adminAddStatus, setAdminAddStatus] = useState("");
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-  const [status, setStatus] = useState("");
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
@@ -91,17 +85,15 @@ function App() {
             setCurrentScreen("admin-dashboard");
           } else if (data.user.role === "hr") {
             setCurrentScreen("hr-dashboard");
-          } else if (data.user.role === "sales") {
-            setCurrentScreen("sales-dashboard"); // 👈 የሽያጭ ሰራተኛ ማረጋገጫ
           } else {
-            setCurrentScreen("order-page");
+            setCurrentScreen("hr-dashboard"); // ነባሪ ወደ HR ዳሽቦርድ እንዲገባ ተደርጓል
           }
         } else {
           setAuthStatus("✅ ምዝገባው ተሳክቷል! አሁን መግባት ይችላሉ።");
           setCurrentScreen("login");
         }
       } else {
-        setAuthStatus(data.error);
+        setAuthStatus(data.error || "የግንኙነት ስህተት ተፈጥሯል");
       }
     } catch {
       setAuthStatus("የሰርቨር ስህተት!");
@@ -113,6 +105,7 @@ function App() {
     setCurrentScreen("home");
   };
 
+  // የ QR ኮድ ማረጋገጫ (Verify View)
   if (currentScreen === "verify-view") {
     return (
       <HrDashboard 
@@ -123,6 +116,7 @@ function App() {
     );
   }
 
+  // ዋናው ገጽ (Home Page)
   if (currentScreen === "home") {
     return (
       <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-between">
@@ -150,13 +144,12 @@ function App() {
           <h1 className="text-3xl sm:text-5xl font-extrabold text-gray-900 mb-6">
             እንኳን ወደ <span className="text-blue-600">POESSA</span> በሰላም መጡ!
           </h1>
-    
-      
+          <p className="text-lg text-gray-600">የሰራተኞች ዲጂታል መታወቂያ እና ማስተዋቂያ ሰሌዳ ማስተዳደሪያ ስርዓት</p>
         </header>
         <main className="max-w-7xl mx-auto px-6 py-10 w-full flex-grow">
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">የሠሯቸው ፕሮጀክቶች</h2>
           {projects.length === 0 ? (
-            <p className="text-center text-gray-500">ምንም መለክት የለም</p>
+            <p className="text-center text-gray-500">ምንም መረጃ የለም</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {projects.map((p) => (
@@ -177,6 +170,7 @@ function App() {
     );
   }
 
+  // የመግቢያ እና ምዝገባ ገጽ (Login / Signup)
   if (currentScreen === "login" || currentScreen === "signup") {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
@@ -202,6 +196,7 @@ function App() {
     );
   }
 
+  // የአድሚን ዳሽቦርድ (Admin Dashboard)
   if (currentScreen === "admin-dashboard" && user?.role === "admin") {
     return (
       <AdminDashboard 
@@ -242,6 +237,7 @@ function App() {
     );
   }
 
+  // የ HR ዳሽቦርድ (HR Dashboard)
   if (currentScreen === "hr-dashboard" && user?.role === "hr") {
     return (
       <div className="flex flex-col min-h-screen bg-gray-900">
@@ -258,6 +254,12 @@ function App() {
           >
             🖨️ መታወቂያ ማተሚያ ጋሪ (Print Cart)
           </button>
+          <button 
+            onClick={handleLogout}
+            className="ml-auto px-4 py-2 rounded-xl text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition"
+          >
+            🚪 መውጫ (Logout)
+          </button>
         </div>
         <div className="flex-grow">
           <HrDashboard 
@@ -270,6 +272,7 @@ function App() {
     );
   }
 
+  // የመታወቂያ ማተሚያ ጋሪ (HR Print Cart Page)
   if (currentScreen === "hr-print-cart" && user?.role === "hr") {
     return (
       <div className="flex flex-col min-h-screen bg-gray-900">
@@ -286,17 +289,22 @@ function App() {
           >
             🖨️ መታወቂያ ማተሚያ ጋሪ (Print Cart)
           </button>
+          <button 
+            onClick={handleLogout}
+            className="ml-auto px-4 py-2 rounded-xl text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition"
+          >
+            🚪 መውጫ (Logout)
+          </button>
         </div>
         <div className="flex-grow">
           <HRPrintCartPage 
             handleLogout={handleLogout} 
+            API_BASE_URL={API_BASE_URL}
           />
         </div>
       </div>
     );
   }
-
-
 
   return null;
 }
