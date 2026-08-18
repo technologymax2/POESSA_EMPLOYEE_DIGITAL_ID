@@ -815,7 +815,7 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                       <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-[#d4af37]/10 to-transparent pointer-events-none rounded-tr-full"></div>
 
                       <div className="flex justify-between items-center border-b border-white/10 pb-2 relative z-10">
-                        <h3 className="text-[10px] font-bold text-[#d4af37] tracking-wider">የባጅ ተጨማሪ መረጃ / Additional Details</h3>
+                        <h3 className="text-[10px] font-bold text-[#d4af37] tracking-wider">የምስሪያቤታችን ባልደረባ ናቸው</h3>
                         <span className="text-[8px] font-mono text-gray-400">ፋይዳ: {selectedIdCard.faydaNumber}</span>
                       </div>
 
