@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Footer from "./Footer";
 
 function AdminDashboard({
@@ -22,12 +22,7 @@ function AdminDashboard({
 
   const [hrForm, setHrForm] = useState({ name: "", email: "", password: "" });
 
-  useEffect(() => {
-    fetchAdmins();
-    fetchHrs();
-  }, [API_BASE_URL]);
-
-  const fetchAdmins = async () => {
+  const fetchAdmins = useCallback(async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/admin/list`);
       const data = await res.json();
@@ -35,9 +30,9 @@ function AdminDashboard({
     } catch (err) {
       console.error("አድሚኖችን ማምጣት አልተቻለም");
     }
-  };
+  }, [API_BASE_URL]);
 
-  const fetchHrs = async () => {
+  const fetchHrs = useCallback(async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/admin/hrs`);
       const data = await res.json();
@@ -45,7 +40,12 @@ function AdminDashboard({
     } catch (err) {
       console.error("HR ማምጣት አልተቻለም");
     }
-  };
+  }, [API_BASE_URL]);
+
+  useEffect(() => {
+    fetchAdmins();
+    fetchHrs();
+  }, [fetchAdmins, fetchHrs]);
 
   const handleAddHRSubmit = async (e) => {
     e.preventDefault();
