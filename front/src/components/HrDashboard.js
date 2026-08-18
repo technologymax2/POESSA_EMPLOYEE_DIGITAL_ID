@@ -746,9 +746,9 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
 
                       <div className="relative z-10 bg-[#07101a] -mx-3 -mb-3 py-1.5 px-2 text-center border-t border-[#d4af37]/30">
                         <p className="text-[7.5px] text-gray-400"> Private Organizations Employees Social Security Administration </p>
-                      </div>
+                </div>
                     </div>
-                  </div
+                  </div>
                 </>
               ) : (
                 <>
