@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Footer from "./Footer";
-import { uploadImageToImgBB } from "./imageUploading";
 
 function AdminDashboard({
   user,
@@ -20,17 +19,14 @@ function AdminDashboard({
   const [hrList, setHrList] = useState([]);
  
   const [activeTab, setActiveTab] = useState("messages");
-  // ለሞባይል የሚሆን የጎን ምናሌ (Sidebar Menu) ክፍት/ዝግ መቆጣጠሪያ
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [editingAdmin, setEditingAdmin] = useState(null);
   const [editForm, setEditForm] = useState({ name: "", email: "" });
   const [passwordReset, setPasswordReset] = useState({ id: "", newPassword: "" });
 
-  // HR Form state
   const [hrForm, setHrForm] = useState({ name: "", email: "", password: "" });
   const [selectedUserEmail, setSelectedUserEmail] = useState(null);
-  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchMessages();
@@ -118,17 +114,6 @@ function AdminDashboard({
       }
     } catch (err) {
       alert("መልዕክቱን መላክ አልተቻለም።");
-    }
-  };
-
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    try {
-      const imageUrl = await uploadImageToImgBB(file, setUploading);
-      setProjectForm((prev) => ({ ...prev, imageUrl: imageUrl }));
-      alert("ፎቶው በስኬት ተጭኗል!");
-    } catch (err) {
-      alert("ፎቶ ማውረድ አልተቻለም፦ " + err.message);
     }
   };
 
@@ -248,7 +233,6 @@ function AdminDashboard({
   return (
     <div className="w-full max-w-7xl mx-auto p-2 sm:p-4 box-border relative text-white bg-[#0d0f12] min-h-screen">
       
-      {/* 📱 ሄደር (ከሜኑ አዝራር ጋር) */}
       <div className="flex flex-wrap justify-between items-center gap-3 py-3 px-2 border-b border-[#30363d] mb-4">
         <div className="flex items-center gap-3">
           <button 
@@ -265,10 +249,8 @@ function AdminDashboard({
         </button>
       </div>
 
-      {/* ዋናው አካባቢ ከሳይድባር ጋር */}
       <div className="flex relative gap-4">
         
-        {/* የሞባይል ዳርክ ባክግራውንድ ማደብዘዣ (Backdrop) */}
         {sidebarOpen && (
           <div 
             onClick={() => setSidebarOpen(false)}
@@ -276,7 +258,6 @@ function AdminDashboard({
           ></div>
         )}
 
-        {/* 🗂️ የጎን ምናሌ (Sidebar Menu / Drawer) */}
         <div 
           className={`fixed md:relative top-0 left-0 h-full md:h-auto w-64 bg-[#161b22] border-r md:border border-[#30363d] rounded-none md:rounded-xl p-4 flex flex-col gap-2 z-50 transition-transform duration-300 ease-in-out ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
@@ -319,10 +300,8 @@ function AdminDashboard({
           </button>
         </div>
 
-        {/* ዋናው የይዘት ማሳያ አካባቢ */}
         <div className="flex-1 min-w-0">
 
-          {/* 2. መልዕክቶች */}
           {activeTab === "messages" && (
             <>
               <h3 className="text-sm font-bold mb-3">💬 የደንበኞች መልዕክት ዝርዝር</h3>
@@ -400,7 +379,6 @@ function AdminDashboard({
             </>
           )}
 
-          {/* 3. አድሚኖች */}
           {activeTab === "admins" && (
             <div className="grid grid-cols-1 gap-4">
               <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4">
@@ -436,7 +414,6 @@ function AdminDashboard({
             </div>
           )}
 
-          {/* 4. HR */}
           {activeTab === "hrs" && (
             <div className="grid grid-cols-1 gap-4">
               <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4">
