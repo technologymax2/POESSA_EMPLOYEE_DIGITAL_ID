@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Footer from './Footer';
 
 const IMGBB_API_KEY = "ebd592608f4dba1e8271bec8e920c408";
-
+const FRONTEND_URL = "https://poessa-employee-digital-id.vercel.app";
 
 function HRDashboard({ user, handleLogout, API_BASE_URL }) {
   const [employeeList, setEmployeeList] = useState([]);
