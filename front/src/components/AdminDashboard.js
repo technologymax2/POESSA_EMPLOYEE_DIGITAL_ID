@@ -15,7 +15,6 @@ function AdminDashboard({
 }) {
   const [replyText, setReplyText] = useState({});
   const [adminList, setAdminList] = useState([]);
-  const [userList, setUserList] = useState([]);
   const [hrList, setHrList] = useState([]);
  
   const [activeTab, setActiveTab] = useState("messages");
