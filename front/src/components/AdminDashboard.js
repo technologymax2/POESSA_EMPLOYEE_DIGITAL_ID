@@ -1,41 +1,256 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from "react";
+import Footer from "./Footer";
+import { uploadImageToImgBB } from "./imageUploading";
 
-function AdminDashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("messages");
-  
-  // States for data lists & forms
-  const [uniqueUsers, setUniqueUsers] = useState([]);
-  const [selectedUserEmail, setSelectedUserEmail] = useState(null);
-  const [messages, setMessages] = useState([]);
+function AdminDashboard({
+  user,
+  handleLogout,
+  adminMessages,
+  fetchMessages,
+  newAdminForm,
+  handleNewAdminChange,
+  handleAddAdminSubmit,
+  adminAddStatus,
+  API_BASE_URL,
+  handleDeleteMessage,
+}) {
   const [replyText, setReplyText] = useState({});
-
   const [adminList, setAdminList] = useState([]);
-  const [newAdminForm, setNewAdminForm] = useState({ name: "", email: "", password: "" });
-  const [adminAddStatus, setAdminAddStatus] = useState("");
-  const [passwordReset, setPasswordReset] = useState({ id: "", newPassword: "" });
+  const [userList, setUserList] = useState([]);
+  const [hrList, setHrList] = useState([]);
+ 
+  const [activeTab, setActiveTab] = useState("messages");
+  // ለሞባይል የሚሆን የጎን ምናሌ (Sidebar Menu) ክፍት/ዝግ መቆጣጠሪያ
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const [editingAdmin, setEditingAdmin] = useState(null);
   const [editForm, setEditForm] = useState({ name: "", email: "" });
+  const [passwordReset, setPasswordReset] = useState({ id: "", newPassword: "" });
 
-  const [hrList, setHrList] = useState([]);
+  // HR Form state
   const [hrForm, setHrForm] = useState({ name: "", email: "", password: "" });
+  const [selectedUserEmail, setSelectedUserEmail] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
-  const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://olinexamcenter.onrender.com';
+  useEffect(() => {
+    fetchMessages();
+    fetchAdmins();
+    fetchUsers();
+    fetchHrs();
+    const interval = setInterval(() => {
+      fetchMessages();
+    }, 5000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [API_BASE_URL]);
 
-  // Placeholder fetch functions (ለማስተካከል እንዲመችዎ)
-  const fetchAdmins = () => {};
-  const handleLogout = () => {};
-  const handleেই SendAdminMessage = () => {};
-  const handleDeleteMessage = (msgId) => {};
-  const handleAddAdminSubmit = (e) => { e.preventDefault(); setNewAdminForm({ name: "", email: "", password: "" }); };
-  const handleResetPassword = (id) => { setPasswordReset({ id: "", newPassword: "" }); };
-  const handleUpdateAdmin = (e) => { e.preventDefault(); setEditingAdmin(null); };
-  const handleDeleteAdmin = (id) => {};
-  const handleAddHRSubmit = (e) => { e.preventDefault(); setHrForm({ name: "", email: "", password: "" }); };
-  const handleResetHRPassword = (id) => {};
-  const handleDeleteHR = (id) => {};
+  const uniqueUsers = useMemo(() => {
+    const users = [];
+    const seenEmails = new Set();
+    adminMessages.forEach((msg) => {
+      if (!seenEmails.has(msg.email)) {
+        seenEmails.add(msg.email);
+        users.push({ name: msg.name, email: msg.email });
+      }
+    });
+    return users;
+  }, [adminMessages]);
 
-  const filteredMessages = messages.filter(m => m.email === selectedUserEmail);
+  useEffect(() => {
+    if (uniqueUsers.length > 0 && !selectedUserEmail) {
+      setSelectedUserEmail(uniqueUsers[0].email);
+    }
+  }, [uniqueUsers, selectedUserEmail]);
+
+  const filteredMessages = adminMessages.filter(
+    (msg) => msg.email === selectedUserEmail
+  );
+
+  const fetchAdmins = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/list`);
+      const data = await res.json();
+      if (data.success) setAdminList(data.admins);
+    } catch (err) {
+      console.error("አድሚኖችን ማምጣት አልተቻለም");
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users`);
+      const data = await res.json();
+      if (data.success) setUserList(data.users);
+    } catch (err) {
+      console.error("ተጠቃሚዎችን ማምጣት አልተቻለም");
+    }
+  };
+
+  const fetchHrs = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/hrs`);
+      const data = await res.json();
+      if (data.success) setHrList(data.hrs);
+    } catch (err) {
+      console.error("HR ማምጣት አልተቻለም");
+    }
+  };
+
+
+  const handleSendAdminMessage = async () => {
+    const txt = replyText["global_admin_chat"];
+    if (!txt || !txt.trim()) return alert("እባክዎ ትክክለኛ መልዕክት ይጻፉ!");
+    const activeUser = uniqueUsers.find((u) => u.email === selectedUserEmail);
+    if (!activeUser) return alert("እባክዎ ትክክለኛ ደንበኛ ይምረጡ!");
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/send-new-message`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: activeUser.name,
+          email: selectedUserEmail,
+          message: txt,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setReplyText((prev) => ({ ...prev, global_admin_chat: "" }));
+        fetchMessages();
+      }
+    } catch (err) {
+      alert("መልዕክቱን መላክ አልተቻለም።");
+    }
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    try {
+      const imageUrl = await uploadImageToImgBB(file, setUploading);
+      setProjectForm((prev) => ({ ...prev, imageUrl: imageUrl }));
+      alert("ፎቶው በስኬት ተጭኗል!");
+    } catch (err) {
+      alert("ፎቶ ማውረድ አልተቻለም፦ " + err.message);
+    }
+  };
+
+
+
+  const handleAddHRSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/hrs`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(hrForm),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("HR በስኬት ተመዝግቧል!");
+        setHrForm({ name: "", email: "", password: "" });
+        fetchHrs();
+      } else {
+        alert(data.error || "HR መመዝገብ አልተቻለም");
+      }
+    } catch (err) {
+      alert("ስህተት ተፈጥሯል");
+    }
+  };
+
+  const handleDeleteHR = async (id) => {
+    if (!window.confirm("ይህንን HR ማጥፋት ይፈልጋሉ?")) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/hrs/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        alert("HR ተሰርዟል!");
+        fetchHrs();
+      }
+    } catch (err) {
+      alert("ማጥፋት አልተቻለም");
+    }
+  };
+
+  const handleResetHRPassword = async (id) => {
+    const newPassword = prompt("ለዚህ HR አዲስ ፓስወርድ ያስገቡ:");
+    if (!newPassword) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/hrs/reset-password/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ newPassword }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("የ HR ፓስወርድ ተቀይሯል!");
+      } else {
+        alert(data.error || "ፓስወርድ መቀየር አልተቻለም");
+      }
+    } catch (err) {
+      alert("ስህተት አጋጥሟል");
+    }
+  };
+
+
+  const handleUpdateAdmin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(
+        `${API_BASE_URL}/api/admin/update/${editingAdmin}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(editForm),
+        }
+      );
+      if (res.ok) {
+        alert("አድሚን መረጃ ተስተካክሏል!");
+        setEditingAdmin(null);
+        fetchAdmins();
+      }
+    } catch (err) {
+      alert("ማስተካከሉ አልተሳካም");
+    }
+  };
+
+  const handleResetPassword = async (id) => {
+    if (!passwordReset.newPassword || passwordReset.id !== id)
+      return alert("እባክዎ ትክክለኛ ፓስወርድ ይጻፉ!");
+    try {
+      const res = await fetch(
+        `${API_BASE_URL}/api/admin/reset-password/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ newPassword: passwordReset.newPassword }),
+        }
+      );
+      if (res.ok) {
+        alert("አድሚኑ ፓስወርድ ተቀይሯል!");
+        setPasswordReset({ id: "", newPassword: "" });
+      }
+    } catch (err) {
+      alert("ፓስወርድ መቀየር አልተቻለም");
+    }
+  };
+
+  const handleDeleteAdmin = async (id) => {
+    if (!window.confirm("እርግጠኛ ነዎት አድሚኑን ማጥፋት ይፈልጋሉ?")) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/delete/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        alert("አድሚኑ ተሰርዟል!");
+        fetchAdmins();
+      }
+    } catch (err) {
+      alert("ማጥፋት አልተቻለም");
+    }
+  };
+
+ 
+
 
   return (
     <div className="w-full max-w-7xl mx-auto p-2 sm:p-4 box-border relative text-white bg-[#0d0f12] min-h-screen">
@@ -92,6 +307,7 @@ function AdminDashboard() {
           >
             💬 መልዕክቶች
           </button>
+         
           <button
             onClick={() => { setActiveTab("admins"); setSidebarOpen(false); }}
             className={`w-full text-left p-2.5 rounded-lg font-bold transition ${
@@ -108,12 +324,16 @@ function AdminDashboard() {
           >
             👥 የሰው ሃብት (HR)
           </button>
+         
+         
         </div>
 
         {/* ዋናው የይዘት ማሳያ አካባቢ */}
         <div className="flex-1 min-w-0">
 
-          {/* 1. መልዕክቶች */}
+         
+
+          {/* 2. መልዕክቶች */}
           {activeTab === "messages" && (
             <>
               <h3 className="text-sm font-bold mb-3">💬 የደንበኞች መልዕክት ዝርዝር</h3>
@@ -191,15 +411,15 @@ function AdminDashboard() {
             </>
           )}
 
-          {/* 2. አድሚኖች */}
+          {/* 3. አድሚኖች */}
           {activeTab === "admins" && (
             <div className="grid grid-cols-1 gap-4">
               <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4">
                 <h3 className="text-base font-bold mb-3">➕ አዲስ አድሚን ይፍጠሩ</h3>
                 <form onSubmit={(e) => { handleAddAdminSubmit(e); setTimeout(fetchAdmins, 1000); }} className="flex flex-col gap-3">
-                  <input type="text" name="name" placeholder="የአድሚን ስም" value={newAdminForm.name} onChange={(e) => setNewAdminForm({...newAdminForm, name: e.target.value})} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
-                  <input type="text" name="email" placeholder="የአድሚን ኢሜይል" value={newAdminForm.email} onChange={(e) => setNewAdminForm({...newAdminForm, email: e.target.value})} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
-                  <input type="password" name="password" placeholder="የሚስጥር ቃል" value={newAdminForm.password} onChange={(e) => setNewAdminForm({...newAdminForm, password: e.target.value})} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
+                  <input type="text" name="name" placeholder="የአድሚን ስም" value={newAdminForm.name} onChange={handleNewAdminChange} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
+                  <input type="text" name="email" placeholder="የአድሚን ኢሜይል" value={newAdminForm.email} onChange={handleNewAdminChange} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
+                  <input type="password" name="password" placeholder="የሚስጥር ቃል" value={newAdminForm.password} onChange={handleNewAdminChange} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
                   <button type="submit" className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold p-2.5 rounded-lg transition">አድሚኑን መዝግብ</button>
                 </form>
                 {adminAddStatus && <p className="text-sm text-yellow-400 mt-2">{adminAddStatus}</p>}
@@ -227,7 +447,7 @@ function AdminDashboard() {
             </div>
           )}
 
-          {/* 3. HR */}
+          {/* 4. HR */}
           {activeTab === "hrs" && (
             <div className="grid grid-cols-1 gap-4">
               <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4">
@@ -259,8 +479,8 @@ function AdminDashboard() {
             </div>
           )}
 
-        </div>
-      </div>
+
+
 
       {editingAdmin && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
@@ -278,6 +498,7 @@ function AdminDashboard() {
         </div>
       )}
 
+      <Footer />
     </div>
   );
 }
