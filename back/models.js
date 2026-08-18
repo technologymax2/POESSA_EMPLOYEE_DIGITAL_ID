@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 // 2. User Schema
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -10,8 +9,6 @@ const userSchema = new mongoose.Schema({
   isBlocked: { type: Boolean, default: false },
 });
 const User = mongoose.model("User", userSchema);
-
-
 
 // 4. Employee Schema
 const employeeSchema = new mongoose.Schema({
@@ -30,6 +27,7 @@ const employeeSchema = new mongoose.Schema({
   woreda: { type: String, default: "" },
   positionAmh: { type: String, default: "" },
   positionEng: { type: String, default: "" },
+  branch: { type: String, default: "" }, // 👈 የቅርንጫፍ መስሪያ ቤት (Branch) እዚህ ተጨምሯል
   orgPhoneNumber: { type: String, default: "" },
   orgEmail: { type: String, default: "" },
   logoUrl: { type: String, default: "" },
@@ -39,8 +37,6 @@ const employeeSchema = new mongoose.Schema({
   date: { type: Date, default: Date.now },
 });
 const Employee = mongoose.model("Employee", employeeSchema);
-
-
 
 module.exports = {
   User,
