@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Login from "./components/Login";
 import AdminDashboard from "./components/AdminDashboard";
 import HrDashboard from "./components/HrDashboard";
@@ -32,11 +32,23 @@ function App() {
     }
   }, []);
 
+  const fetchMessages = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/messages`);
+      const data = await res.json();
+      if (data.success) {
+        setAdminMessages(data.messages);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, [API_BASE_URL]);
+
   useEffect(() => {
     if (user && user.role === "admin") {
       fetchMessages();
     }
-  }, [user]);
+  }, [user, fetchMessages]);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/projects`)
@@ -55,18 +67,6 @@ function App() {
         setProjects([]);
       });
   }, [API_BASE_URL]);
-
-  const fetchMessages = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/messages`);
-      const data = await res.json();
-      if (data.success) {
-        setAdminMessages(data.messages);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
