@@ -70,7 +70,6 @@ function AdminDashboard({
     }
   };
 
-
   const fetchHrs = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/admin/hrs`);
@@ -292,80 +291,59 @@ function AdminDashboard({
         <div className="flex-1 min-w-0">
 
           {activeTab === "messages" && (
-            <>
-              <h3 className="text-sm font-bold mb-3">💬 የደንበኞች መልዕክት ዝርዝር</h3>
-              <div className="flex flex-col lg:flex-row gap-4">
-                <div className="w-full lg:w-72 bg-[#161b22] border border-[#30363d] rounded-xl p-3">
-                  <div className="text-xs font-bold text-gray-400 mb-2">👥 ተጠቃሚዎች ({uniqueUsers.length})</div>
-                  <div className="max-h-64 overflow-y-auto flex flex-col gap-1">
-                    {uniqueUsers.map((u) => (
-                      <div
-                        key={u.email}
-                        className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition ${
-                          selectedUserEmail === u.email ? "bg-yellow-400/20 border border-yellow-400" : "hover:bg-gray-800"
-                        }`}
-                        onClick={() => setSelectedUserEmail(u.email)}
-                      >
-                        <span>👤</span>
-                        <div className="overflow-hidden">
-                          <h4 className="text-sm font-semibold truncate">{u.name}</h4>
-                          <p className="text-xs text-gray-400 truncate">{u.email}</p>
-                        </div>
-                      </div>
-                    ))}
-                    {uniqueUsers.length === 0 && <p className="text-xs text-gray-400">ምንም ቻት የለም</p>}
-                  </div>
-                </div>
-
-                <div className="flex-1 bg-[#161b22] border border-[#30363d] rounded-xl flex flex-col min-h-[350px]">
-                  {selectedUserEmail ? (
-                    <>
-                      <div className="p-3 border-b border-[#30363d] text-xs font-bold">
-                        💬 ከ <strong className="text-yellow-400">{uniqueUsers.find((u) => u.email === selectedUserEmail)?.name}</strong> ጋር
-                      </div>
-                      <div className="flex-1 p-3 overflow-y-auto flex flex-col gap-3">
-                        {filteredMessages.map((msg) => (
-                          <div key={msg._id} className="flex flex-col gap-1">
-                            {!msg.message.startsWith("[አድሚን መልዕክት]") && (
-                              <div className="bg-[#21262d] p-3 rounded-lg max-w-[85%] self-start">
-                                <p className="text-sm">{msg.message}</p>
-                                <span className="text-[10px] text-gray-400 mt-1 block">🕒 {new Date(msg.date).toLocaleDateString()}</span>
-                              </div>
-                            )}
-                            {msg.reply && (
-                              <div className="bg-yellow-400/10 border border-yellow-400/30 p-3 rounded-lg max-w-[85%] self-end">
-                                <span className="text-xs font-bold text-yellow-400 block mb-1">አድሚን ምላሽ፦</span>
-                                <p className="text-sm">{msg.reply}</p>
-                              </div>
-                            )}
-                            <button onClick={() => handleDeleteMessage(msg._id)} className="text-red-400 text-xs self-start hover:underline mt-1">
-                              🗑️ መልዕክቱን አጥፊ
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="p-3 bg-[#161b22] border-t border-[#30363d] flex gap-2">
-                        <input
-                          type="text"
-                          placeholder="መልዕክትዎ ይጻፉ..."
-                          value={replyText["global_admin_chat"] || ""}
-                          onChange={(e) => setReplyText({ ...replyText, global_admin_chat: e.target.value })}
-                          onKeyDown={(e) => { if (e.key === "Enter") handleSendAdminMessage(); }}
-                          className="flex-1 bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400 text-sm"
-                        />
-                        <button onClick={handleSendAdminMessage} className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded-lg font-bold text-sm transition">
-                          ላክ
-                        </button>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="flex items-center justify-center flex-1 text-gray-400 text-sm">
-                      <p>እባክዎ ተጠቃሚ ይምረጡ</p>
+            <div className="flex flex-col gap-4">
+              <h3 className="text-sm font-bold mb-1">💬 የደንበኞች መልዕክት</h3>
+              
+              <div className="bg-[#161b22] border border-[#30363d] rounded-xl flex flex-col min-h-[400px]">
+                {selectedUserEmail ? (
+                  <>
+                    <div className="p-3 border-b border-[#30363d] text-xs font-bold">
+                      💬 ከ <strong className="text-yellow-400">{uniqueUsers.find((u) => u.email === selectedUserEmail)?.name}</strong> ጋር
                     </div>
-                  )}
-                </div>
+                    
+                    <div className="flex-1 p-3 overflow-y-auto flex flex-col gap-3">
+                      {filteredMessages.map((msg) => (
+                        <div key={msg._id} className="flex flex-col gap-1">
+                          {!msg.message.startsWith("[አድሚን መልዕክት]") && (
+                            <div className="bg-[#21262d] p-3 rounded-lg max-w-[85%] self-start">
+                              <p className="text-sm">{msg.message}</p>
+                              <span className="text-[10px] text-gray-400 mt-1 block">🕒 {new Date(msg.date).toLocaleDateString()}</span>
+                            </div>
+                          )}
+                          {msg.reply && (
+                            <div className="bg-yellow-400/10 border border-yellow-400/30 p-3 rounded-lg max-w-[85%] self-end">
+                              <span className="text-xs font-bold text-yellow-400 block mb-1">አድሚን ምላሽ፦</span>
+                              <p className="text-sm">{msg.reply}</p>
+                            </div>
+                          )}
+                          <button onClick={() => handleDeleteMessage(msg._id)} className="text-red-400 text-xs self-start hover:underline mt-1">
+                            🗑️ መልዕክቱን አጥፊ
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-3 bg-[#161b22] border-t border-[#30363d] flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="መልዕክትዎ ይጻፉ..."
+                        value={replyText["global_admin_chat"] || ""}
+                        onChange={(e) => setReplyText({ ...replyText, global_admin_chat: e.target.value })}
+                        onKeyDown={(e) => { if (e.key === "Enter") handleSendAdminMessage(); }}
+                        className="flex-1 bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400 text-sm"
+                      />
+                      <button onClick={handleSendAdminMessage} className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded-lg font-bold text-sm transition">
+                        ላክ
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center flex-1 text-gray-400 text-sm">
+                    <p>መልዕክት መጫን አልተቻለም</p>
+                  </div>
+                )}
               </div>
-            </>
+            </div>
           )}
 
           {activeTab === "admins" && (
