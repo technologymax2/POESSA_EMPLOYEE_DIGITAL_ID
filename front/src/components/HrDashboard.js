@@ -1041,7 +1041,7 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
     </div>
   )}
 
-  {verifiedEmployeeModal && (
+ {verifiedEmployeeModal && (
     <div className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-50">
       <div className="bg-gray-800 border-2 border-green-500 rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center relative animate-fade-in">
         <button 
