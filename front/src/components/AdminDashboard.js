@@ -1,398 +1,41 @@
-import React, { useState, useEffect, useMemo } from "react";
-import Footer from "./Footer";
-import { uploadImageToImgBB } from "./imageUploading";
+import React, { useState, useEffect } from 'react';
 
-function AdminDashboard({
-  user,
-  handleLogout,
-  adminMessages,
-  fetchMessages,
-  newAdminForm,
-  handleNewAdminChange,
-  handleAddAdminSubmit,
-  adminAddStatus,
-  API_BASE_URL,
-  handleDeleteMessage,
-  projects,
-  setProjects,
-}) {
-  const [replyText, setReplyText] = useState({});
-  const [adminList, setAdminList] = useState([]);
-  const [userList, setUserList] = useState([]);
-  const [hrList, setHrList] = useState([]);
-  const [salesList, setSalesList] = useState([]); // ለሽያጭ ሰራተኞች ዝርዝር
-
-  // ንቁ ታብ
-  const [activeTab, setActiveTab] = useState("messages");
-  // ለሞባይል የሚሆን የጎን ምናሌ (Sidebar Menu) ክፍት/ዝግ መቆጣጠሪያ
+function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("messages");
+  
+  // States for data lists & forms
+  const [uniqueUsers, setUniqueUsers] = useState([]);
+  const [selectedUserEmail, setSelectedUserEmail] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [replyText, setReplyText] = useState({});
 
+  const [adminList, setAdminList] = useState([]);
+  const [newAdminForm, setNewAdminForm] = useState({ name: "", email: "", password: "" });
+  const [adminAddStatus, setAdminAddStatus] = useState("");
+  const [passwordReset, setPasswordReset] = useState({ id: "", newPassword: "" });
   const [editingAdmin, setEditingAdmin] = useState(null);
   const [editForm, setEditForm] = useState({ name: "", email: "" });
-  const [passwordReset, setPasswordReset] = useState({ id: "", newPassword: "" });
 
-  // HR Form state
+  const [hrList, setHrList] = useState([]);
   const [hrForm, setHrForm] = useState({ name: "", email: "", password: "" });
 
-  // የሽያጭ ሰራተኛ (Sales) Form state
-  const [salesForm, setSalesForm] = useState({ name: "", email: "", password: "" });
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://olinexamcenter.onrender.com';
 
-  const [selectedUserEmail, setSelectedUserEmail] = useState(null);
-  const [projectForm, setProjectForm] = useState({ title: "", link: "", imageUrl: "" });
-  const [uploading, setUploading] = useState(false);
+  // Placeholder fetch functions (ለማስተካከል እንዲመችዎ)
+  const fetchAdmins = () => {};
+  const handleLogout = () => {};
+  const handleেই SendAdminMessage = () => {};
+  const handleDeleteMessage = (msgId) => {};
+  const handleAddAdminSubmit = (e) => { e.preventDefault(); setNewAdminForm({ name: "", email: "", password: "" }); };
+  const handleResetPassword = (id) => { setPasswordReset({ id: "", newPassword: "" }); };
+  const handleUpdateAdmin = (e) => { e.preventDefault(); setEditingAdmin(null); };
+  const handleDeleteAdmin = (id) => {};
+  const handleAddHRSubmit = (e) => { e.preventDefault(); setHrForm({ name: "", email: "", password: "" }); };
+  const handleResetHRPassword = (id) => {};
+  const handleDeleteHR = (id) => {};
 
-  useEffect(() => {
-    fetchMessages();
-    fetchAdmins();
-    fetchUsers();
-    fetchHrs();
-    fetchSales(); // የሽያጭ ሰራተኞችን ለመጥራት
-    const interval = setInterval(() => {
-      fetchMessages();
-    }, 5000);
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [API_BASE_URL]);
-
-  const uniqueUsers = useMemo(() => {
-    const users = [];
-    const seenEmails = new Set();
-    adminMessages.forEach((msg) => {
-      if (!seenEmails.has(msg.email)) {
-        seenEmails.add(msg.email);
-        users.push({ name: msg.name, email: msg.email });
-      }
-    });
-    return users;
-  }, [adminMessages]);
-
-  useEffect(() => {
-    if (uniqueUsers.length > 0 && !selectedUserEmail) {
-      setSelectedUserEmail(uniqueUsers[0].email);
-    }
-  }, [uniqueUsers, selectedUserEmail]);
-
-  const filteredMessages = adminMessages.filter(
-    (msg) => msg.email === selectedUserEmail
-  );
-
-  const fetchAdmins = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/list`);
-      const data = await res.json();
-      if (data.success) setAdminList(data.admins);
-    } catch (err) {
-      console.error("አድሚኖችን ማምጣት አልተቻለም");
-    }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/users`);
-      const data = await res.json();
-      if (data.success) setUserList(data.users);
-    } catch (err) {
-      console.error("ተጠቃሚዎችን ማምጣት አልተቻለም");
-    }
-  };
-
-  const fetchHrs = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/hrs`);
-      const data = await res.json();
-      if (data.success) setHrList(data.hrs);
-    } catch (err) {
-      console.error("HR ማምጣት አልተቻለም");
-    }
-  };
-
-  // የሽያጭ ሰራተኞችን ከባክኤንድ ማምጫ
-  const fetchSales = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/sales`);
-      const data = await res.json();
-      if (data.success) setSalesList(data.sales);
-    } catch (err) {
-      console.error("የሽያጭ ሰራተኞችን ማምጣት አልተቻለም");
-    }
-  };
-
-  const handleSendAdminMessage = async () => {
-    const txt = replyText["global_admin_chat"];
-    if (!txt || !txt.trim()) return alert("እባክዎ ትክክለኛ መልዕክት ይጻፉ!");
-    const activeUser = uniqueUsers.find((u) => u.email === selectedUserEmail);
-    if (!activeUser) return alert("እባክዎ ትክክለኛ ደንበኛ ይምረጡ!");
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/send-new-message`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: activeUser.name,
-          email: selectedUserEmail,
-          message: txt,
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setReplyText((prev) => ({ ...prev, global_admin_chat: "" }));
-        fetchMessages();
-      }
-    } catch (err) {
-      alert("መልዕክቱን መላክ አልተቻለም።");
-    }
-  };
-
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    try {
-      const imageUrl = await uploadImageToImgBB(file, setUploading);
-      setProjectForm((prev) => ({ ...prev, imageUrl: imageUrl }));
-      alert("ፎቶው በስኬት ተጭኗል!");
-    } catch (err) {
-      alert("ፎቶ ማውረድ አልተቻለም፦ " + err.message);
-    }
-  };
-
-  const handleProjectSubmit = async (e) => {
-    e.preventDefault();
-    if (!projectForm.imageUrl) return alert("እባክዎ ትክክለኛ ፎቶ ያስገቡ!");
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/projects`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(projectForm),
-      });
-      if (res.ok) {
-        alert("ፕሮጀክት በተሳካ ሁኔታ ተመዝግቧል!");
-        setProjectForm({ title: "", link: "", imageUrl: "" });
-      }
-    } catch (err) {
-      alert("ስህተት አጋጥሟል");
-    }
-  };
-
-  const handleAddHRSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/hrs`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(hrForm),
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert("HR በስኬት ተመዝግቧል!");
-        setHrForm({ name: "", email: "", password: "" });
-        fetchHrs();
-      } else {
-        alert(data.error || "HR መመዝገብ አልተቻለም");
-      }
-    } catch (err) {
-      alert("ስህተት ተፈጥሯል");
-    }
-  };
-
-  const handleDeleteHR = async (id) => {
-    if (!window.confirm("ይህንን HR ማጥፋት ይፈልጋሉ?")) return;
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/hrs/${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        alert("HR ተሰርዟል!");
-        fetchHrs();
-      }
-    } catch (err) {
-      alert("ማጥፋት አልተቻለም");
-    }
-  };
-
-  const handleResetHRPassword = async (id) => {
-    const newPassword = prompt("ለዚህ HR አዲስ ፓስወርድ ያስገቡ:");
-    if (!newPassword) return;
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/hrs/reset-password/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newPassword }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert("የ HR ፓስወርድ ተቀይሯል!");
-      } else {
-        alert(data.error || "ፓስወርድ መቀየር አልተቻለም");
-      }
-    } catch (err) {
-      alert("ስህተት አጋጥሟል");
-    }
-  };
-
-  // የሽያጭ ሰራተኛ መመዝገቢያ ማስረከቢያ
-  const handleAddSalesSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/sales`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(salesForm),
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert("የሽያጭ ሰራተኛው በስኬት ተመዝግቧል!");
-        setSalesForm({ name: "", email: "", password: "" });
-        fetchSales();
-      } else {
-        alert(data.error || "የሽያጭ ሰራተኛ መመዝገብ አልተቻለም");
-      }
-    } catch (err) {
-      alert("ስህተት ተፈጥሯል");
-    }
-  };
-
-  // የሽያጭ ሰራተኛን ማጥፊያ
-  const handleDeleteSales = async (id) => {
-    if (!window.confirm("ይህንን የሽያጭ ሰራተኛ ማጥፋት ይፈልጋሉ?")) return;
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/sales/${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        alert("የሽያጭ ሰራተኛው ተሰርዟል!");
-        fetchSales();
-      }
-    } catch (err) {
-      alert("ማጥፋት አልተቻለም");
-    }
-  };
-
-  // የሽያጭ ሰራተኛ ፓስወርድ መቀየሪያ
-  const handleResetSalesPassword = async (id) => {
-    const newPassword = prompt("ለዚህ የሽያጭ ሰራተኛ አዲስ ፓስወርድ ያስገቡ:");
-    if (!newPassword) return;
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/sales/reset-password/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newPassword }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert("የሽያጭ ሰራተኛው ፓስወርድ ተቀይሯል!");
-      } else {
-        alert(data.error || "ፓስወርድ መቀየር አልተቻለም");
-      }
-    } catch (err) {
-      alert("ስህተት አጋጥሟል");
-    }
-  };
-
-  const handleUpdateAdmin = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/admin/update/${editingAdmin}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(editForm),
-        }
-      );
-      if (res.ok) {
-        alert("አድሚን መረጃ ተስተካክሏል!");
-        setEditingAdmin(null);
-        fetchAdmins();
-      }
-    } catch (err) {
-      alert("ማስተካከሉ አልተሳካም");
-    }
-  };
-
-  const handleResetPassword = async (id) => {
-    if (!passwordReset.newPassword || passwordReset.id !== id)
-      return alert("እባክዎ ትክክለኛ ፓስወርድ ይጻፉ!");
-    try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/admin/reset-password/${id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ newPassword: passwordReset.newPassword }),
-        }
-      );
-      if (res.ok) {
-        alert("አድሚኑ ፓስወርድ ተቀይሯል!");
-        setPasswordReset({ id: "", newPassword: "" });
-      }
-    } catch (err) {
-      alert("ፓስወርድ መቀየር አልተቻለም");
-    }
-  };
-
-  const handleDeleteAdmin = async (id) => {
-    if (!window.confirm("እርግጠኛ ነዎት አድሚኑን ማጥፋት ይፈልጋሉ?")) return;
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/delete/${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        alert("አድሚኑ ተሰርዟል!");
-        fetchAdmins();
-      }
-    } catch (err) {
-      alert("ማጥፋት አልተቻለም");
-    }
-  };
-
-  const handleToggleBlockUser = async (id, isBlocked) => {
-    const actionText = isBlocked ? "ክፈት" : "አግድ";
-    if (!window.confirm(`እርግጠኛ ነዎት ተጠቃሚውን ${actionText} ማድረግ ይፈልጋሉ?`))
-      return;
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/users/block/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isBlocked: !isBlocked }),
-      });
-      if (res.ok) {
-        alert("ተጠቃሚው ተስተካክሏል!");
-        fetchUsers();
-      }
-    } catch (err) {
-      alert("ክዋኔው አልተሳካም");
-    }
-  };
-
-  const handleDeleteUser = async (id) => {
-    if (!window.confirm("እርግጠኛ ነዎት ተጠቃሚውን ማጥፋት ይፈልጋሉ?")) return;
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/users/delete/${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        alert("ተጠቃሚው ተሰርዟል!");
-        fetchUsers();
-        fetchMessages();
-      }
-    } catch (err) {
-      alert("ማጥፋት አልተቻለም");
-    }
-  };
-
-  const handleDeleteProject = async (id) => {
-    if (window.confirm("እርግጠኛ ነዎት ፖርትፎሊዮውን ማጥፋት ይፈልጋሉ?")) {
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/admin/projects/${id}`, {
-          method: "DELETE",
-        });
-        if (res.ok) {
-          alert("ፖርትፎሊዮው ተሰርዟል!");
-          setProjects((prev) => prev.filter((p) => p._id !== id));
-        }
-      } catch (err) {
-        alert("ማጥፋት አልተቻለም");
-      }
-    }
-  };
+  const filteredMessages = messages.filter(m => m.email === selectedUserEmail);
 
   return (
     <div className="w-full max-w-7xl mx-auto p-2 sm:p-4 box-border relative text-white bg-[#0d0f12] min-h-screen">
@@ -450,14 +93,6 @@ function AdminDashboard({
             💬 መልዕክቶች
           </button>
           <button
-            onClick={() => { setActiveTab("projects"); setSidebarOpen(false); }}
-            className={`w-full text-left p-2.5 rounded-lg font-bold transition ${
-              activeTab === "projects" ? "bg-yellow-400 text-black" : "text-white hover:bg-gray-800"
-            }`}
-          >
-            📁 ፕሮጀክቶች
-          </button>
-          <button
             onClick={() => { setActiveTab("admins"); setSidebarOpen(false); }}
             className={`w-full text-left p-2.5 rounded-lg font-bold transition ${
               activeTab === "admins" ? "bg-yellow-400 text-black" : "text-white hover:bg-gray-800"
@@ -473,74 +108,12 @@ function AdminDashboard({
           >
             👥 የሰው ሃብት (HR)
           </button>
-          {/* ለሽያጭ ሰራተኞች የሚሆን አዲስ የሜኑ አዝራር */}
-          <button
-            onClick={() => { setActiveTab("sales"); setSidebarOpen(false); }}
-            className={`w-full text-left p-2.5 rounded-lg font-bold transition ${
-              activeTab === "sales" ? "bg-yellow-400 text-black" : "text-white hover:bg-gray-800"
-            }`}
-          >
-            🛒 የሽያጭ ሰራተኞች (Sales)
-          </button>
-          <button
-            onClick={() => { setActiveTab("users"); setSidebarOpen(false); }}
-            className={`w-full text-left p-2.5 rounded-lg font-bold transition ${
-              activeTab === "users" ? "bg-yellow-400 text-black" : "text-white hover:bg-gray-800"
-            }`}
-          >
-            👤 ደንበኞች
-          </button>
         </div>
 
         {/* ዋናው የይዘት ማሳያ አካባቢ */}
         <div className="flex-1 min-w-0">
 
-          {/* 1. ፕሮጀክቶች */}
-          {activeTab === "projects" && (
-            <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4 sm:p-6">
-              <h3 className="text-base font-bold mb-4">📁 ፕሮጀክቶች ማስተዳደሪያ</h3>
-              <div className="flex flex-col gap-3 mb-6 pb-6 border-b border-[#333]">
-                <input
-                  type="text"
-                  placeholder="የፕሮጀክት ስም"
-                  value={projectForm.title}
-                  onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })}
-                  className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400"
-                />
-                <input
-                  type="url"
-                  placeholder="የፕሮጀክት ሊንክ"
-                  value={projectForm.link}
-                  onChange={(e) => setProjectForm({ ...projectForm, link: e.target.value })}
-                  className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400"
-                />
-                <input type="file" onChange={handleImageUpload} className="bg-[#0d0f12] border border-[#30363d] text-white p-2 rounded-lg" />
-                <button onClick={handleProjectSubmit} className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold p-2.5 rounded-lg transition" disabled={uploading}>
-                  {uploading ? "በመጫን ላይ..." : "መዝግብ"}
-                </button>
-              </div>
-              <h3 className="text-base font-bold mb-3">📋 ያሉ ፕሮጀክቶች</h3>
-              <div className="grid gap-3">
-                {projects && projects.length > 0 ? (
-                  projects.map((p) => (
-                    <div key={p._id} className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#0d0f12] rounded-lg border border-[#30363d]">
-                      <div className="flex items-center gap-3">
-                        <img src={p.imageUrl} alt={p.title} className="w-12 h-12 object-cover rounded" />
-                        <span className="font-medium">{p.title}</span>
-                      </div>
-                      <button onClick={() => handleDeleteProject(p._id)} className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-md text-sm transition">
-                        🗑️ አጥፋ
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-400">ምንም ፕሮጀክት የለም</p>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* 2. መልዕክቶች */}
+          {/* 1. መልዕክቶች */}
           {activeTab === "messages" && (
             <>
               <h3 className="text-sm font-bold mb-3">💬 የደንበኞች መልዕክት ዝርዝር</h3>
@@ -618,15 +191,15 @@ function AdminDashboard({
             </>
           )}
 
-          {/* 3. አድሚኖች */}
+          {/* 2. አድሚኖች */}
           {activeTab === "admins" && (
             <div className="grid grid-cols-1 gap-4">
               <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4">
                 <h3 className="text-base font-bold mb-3">➕ አዲስ አድሚን ይፍጠሩ</h3>
                 <form onSubmit={(e) => { handleAddAdminSubmit(e); setTimeout(fetchAdmins, 1000); }} className="flex flex-col gap-3">
-                  <input type="text" name="name" placeholder="የአድሚን ስም" value={newAdminForm.name} onChange={handleNewAdminChange} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
-                  <input type="text" name="email" placeholder="የአድሚን ኢሜይል" value={newAdminForm.email} onChange={handleNewAdminChange} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
-                  <input type="password" name="password" placeholder="የሚስጥር ቃል" value={newAdminForm.password} onChange={handleNewAdminChange} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
+                  <input type="text" name="name" placeholder="የአድሚን ስም" value={newAdminForm.name} onChange={(e) => setNewAdminForm({...newAdminForm, name: e.target.value})} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
+                  <input type="text" name="email" placeholder="የአድሚን ኢሜይል" value={newAdminForm.email} onChange={(e) => setNewAdminForm({...newAdminForm, email: e.target.value})} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
+                  <input type="password" name="password" placeholder="የሚስጥር ቃል" value={newAdminForm.password} onChange={(e) => setNewAdminForm({...newAdminForm, password: e.target.value})} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
                   <button type="submit" className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold p-2.5 rounded-lg transition">አድሚኑን መዝግብ</button>
                 </form>
                 {adminAddStatus && <p className="text-sm text-yellow-400 mt-2">{adminAddStatus}</p>}
@@ -654,7 +227,7 @@ function AdminDashboard({
             </div>
           )}
 
-          {/* 4. HR */}
+          {/* 3. HR */}
           {activeTab === "hrs" && (
             <div className="grid grid-cols-1 gap-4">
               <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4">
@@ -686,67 +259,6 @@ function AdminDashboard({
             </div>
           )}
 
-          {/* 5. የሽያጭ ሰራተኞች (Sales) */}
-          {activeTab === "sales" && (
-            <div className="grid grid-cols-1 gap-4">
-              <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4">
-                <h3 className="text-base font-bold mb-3">🛒 አዲስ የሽያጭ ሰራተኛ መመዝገቢያ</h3>
-                <form onSubmit={handleAddSalesSubmit} className="flex flex-col gap-3">
-                  <input type="text" placeholder="የሰራተኛው ስም" value={salesForm.name} onChange={(e) => setSalesForm({ ...salesForm, name: e.target.value })} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
-                  <input type="email" placeholder="ኢሜይል አድራሻ" value={salesForm.email} onChange={(e) => setSalesForm({ ...salesForm, email: e.target.value })} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
-                  <input type="password" placeholder="ፓስወርድ" value={salesForm.password} onChange={(e) => setSalesForm({ ...salesForm, password: e.target.value })} required className="bg-[#0d0f12] border border-[#30363d] text-white p-2.5 rounded-lg outline-none focus:border-yellow-400" />
-                  <button type="submit" className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold p-2.5 rounded-lg transition">የሽያጭ ሰራተኛ መዝግብ</button>
-                </form>
-              </div>
-
-              <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4">
-                <h3 className="text-base font-bold mb-3">📋 የተመዘገቡ የሽያጭ ሰራተኞች ዝርዝር</h3>
-                <div className="flex flex-col gap-3">
-                  {salesList.map((s) => (
-                    <div key={s._id} className="bg-[#0d0f12] border border-[#30363d] p-3 rounded-lg flex flex-col gap-2">
-                      <div><strong>ስም:</strong> {s.name}</div>
-                      <div><strong>ኢሜይል:</strong> {s.email}</div>
-                      <div className="flex gap-2 mt-2">
-                        <button onClick={() => handleResetSalesPassword(s._id)} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded text-xs">ፓስወርድ ቀይር</button>
-                        <button onClick={() => handleDeleteSales(s._id)} className="flex-1 bg-red-600 hover:bg-red-700 text-white p-2 rounded text-xs">🗑️ አጥፋ</button>
-                      </div>
-                    </div>
-                  ))}
-                  {salesList.length === 0 && <p className="text-gray-400 text-sm">ምንም የሽያጭ ሰራተኛ አልተመዘገበም</p>}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* 6. ደንበኞች */}
-          {activeTab === "users" && (
-            <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4">
-              <h3 className="text-base font-bold mb-3">👤 የተመዘገቡ ተጠቃሚዎች እና ደንበኞች</h3>
-              <div className="flex flex-col gap-3">
-                {userList.map((u) => (
-                  <div key={u._id} className={`bg-[#0d0f12] border border-[#30363d] p-3 rounded-lg flex flex-col gap-2 ${u.isBlocked ? "opacity-60" : ""}`}>
-                    <div><strong>ተጠቃሚ ስም:</strong> {u.name}</div>
-                    <div><strong>ኢሜይል:</strong> {u.email}</div>
-                    <div>
-                      <strong>ሁኔታ:</strong>{" "}
-                      <span className={`ml-2 px-2 py-0.5 rounded text-xs ${u.isBlocked ? "bg-red-500/20 text-red-400" : "bg-green-500/20 text-green-400"}`}>
-                        {u.isBlocked ? "🚫 ታግዷል" : "🟢 ንቁ"}
-                      </span>
-                    </div>
-                    <div className="flex gap-2 mt-2">
-                      <button onClick={() => handleToggleBlockUser(u._id, u.isBlocked)} className={`flex-1 p-2 rounded font-bold text-xs ${u.isBlocked ? "bg-green-600 hover:bg-green-700 text-white" : "bg-yellow-500 text-black hover:bg-yellow-600"}`}>
-                        {u.isBlocked ? "🔓 ክፈት" : "🚫 አግድ"}
-                      </button>
-                      <button onClick={() => handleDeleteUser(u._id)} className="flex-1 bg-red-600 hover:bg-red-700 text-white p-2 rounded font-bold text-xs">
-                        🗑️ አጥፋ
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
         </div>
       </div>
 
@@ -766,7 +278,6 @@ function AdminDashboard({
         </div>
       )}
 
-      <Footer />
     </div>
   );
 }
