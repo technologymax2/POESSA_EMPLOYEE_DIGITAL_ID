@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 import logoImg from "./logo.jpg";
 
 function App() {
-  const API_BASE_URL = "";
+  const API_BASE_URL = process.env.REACT_APP_API_URL || "https://poessa-employee-digital-id.onrender.com";
   const [currentScreen, setCurrentScreen] = useState("home");
   const [user, setUser] = useState(null);
   const [authForm, setAuthForm] = useState({
@@ -86,7 +86,7 @@ function App() {
           } else if (data.user.role === "hr") {
             setCurrentScreen("hr-dashboard");
           } else {
-            setCurrentScreen("hr-dashboard"); // ነባሪ ወደ HR ዳሽቦርድ እንዲገባ ተደርጓል
+            setCurrentScreen("hr-dashboard");
           }
         } else {
           setAuthStatus("✅ ምዝገባው ተሳክቷል! አሁን መግባት ይችላሉ።");
@@ -105,7 +105,6 @@ function App() {
     setCurrentScreen("home");
   };
 
-  // የ QR ኮድ ማረጋገጫ (Verify View)
   if (currentScreen === "verify-view") {
     return (
       <HrDashboard 
@@ -116,7 +115,6 @@ function App() {
     );
   }
 
-  // ዋናው ገጽ (Home Page)
   if (currentScreen === "home") {
     return (
       <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-between">
@@ -170,7 +168,6 @@ function App() {
     );
   }
 
-  // የመግቢያ እና ምዝገባ ገጽ (Login / Signup)
   if (currentScreen === "login" || currentScreen === "signup") {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
@@ -196,7 +193,6 @@ function App() {
     );
   }
 
-  // የአድሚን ዳሽቦርድ (Admin Dashboard)
   if (currentScreen === "admin-dashboard" && user?.role === "admin") {
     return (
       <AdminDashboard 
@@ -237,7 +233,6 @@ function App() {
     );
   }
 
-  // የ HR ዳሽቦርድ (HR Dashboard)
   if (currentScreen === "hr-dashboard" && user?.role === "hr") {
     return (
       <div className="flex flex-col min-h-screen bg-gray-900">
@@ -272,7 +267,6 @@ function App() {
     );
   }
 
-  // የመታወቂያ ማተሚያ ጋሪ (HR Print Cart Page)
   if (currentScreen === "hr-print-cart" && user?.role === "hr") {
     return (
       <div className="flex flex-col min-h-screen bg-gray-900">
