@@ -812,7 +812,7 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
         </div>
       </div>
     </div>
-  </div>
+ 
 {selectedIdCard && (
     <div className="fixed inset-0 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-4 z-50 overflow-y-auto">
       <div className="bg-gray-900 border border-gray-700 rounded-2xl p-4 w-full max-w-4xl shadow-2xl flex flex-col items-center gap-4 max-h-[90vh] overflow-y-auto relative">
