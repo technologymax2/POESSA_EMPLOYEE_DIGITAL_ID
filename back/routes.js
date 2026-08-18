@@ -294,5 +294,17 @@ router.get("/hr/search", async (req, res) => {
   }
 });
 
-
+// ሰራተኛው ስራ መለቀቁን መዝገብ ላይ ለማሻሻል (Update Status to Resigned)
+app.put('/api/employees/resign/:id', async (req, res) => {
+  try {
+    const updatedEmployee = await Employee.findByIdAndUpdate(
+      req.params.id,
+      { status: 'resigned' },
+      { new: true }
+    );
+    res.status(200).json({ message: "ሰራተኛው እንደለቀቀ ተመዝግቧል", updatedEmployee });
+  } catch (error) {
+    res.status(500).json({ error: "ስህተት ተፈጥሯል" });
+  }
+});
 module.exports = router;
