@@ -707,7 +707,7 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
 
                       <div className="relative z-10">
                         <h3 className="text-[10px] font-bold text-[#d4af37] border-b border-white/10 pb-1.5 mb-1.5 tracking-wider text-center">
-                          የካርድ መረጃ / ID Details
+                        የመስሪያ ቤታችን ባልደረባ ናቸዉ
                         </h3>
 
                         <div className="text-[8.5px] space-y-1 text-gray-200 bg-black/25 p-2 rounded-lg border border-[#d4af37]/20 mb-1.5">
@@ -727,11 +727,11 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                             <span className="font-mono font-semibold text-white text-[8px]">{selectedIdCard.faydaNumber}</span>
                           </div>
                           <div className="flex justify-between border-b border-white/10 pb-0.5">
-                            <span className="text-green-400 font-medium">የተሰጠበት ቀን (Issue):</span>
+                            <span className="text-green-400 font-medium">የተሰጠበት ቀን :</span>
                             <span className="text-white font-bold">{selectedIdCard.dateOfIssue || 'N/A'}</span>
                           </div>
                           <div className="flex justify-between pb-0.5">
-                            <span className="text-red-400 font-medium">የሚያበቃበት (Expire):</span>
+                            <span className="text-red-400 font-medium">የሚያበቃበት ቀን:</span>
                             <span className="text-red-400 font-bold">{selectedIdCard.expireDate || 'N/A'}</span>
                           </div>
                         </div>
