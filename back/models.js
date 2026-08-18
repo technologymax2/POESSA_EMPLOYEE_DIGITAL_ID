@@ -1,21 +1,5 @@
 const mongoose = require("mongoose");
 
-// 1. Lead Schema
-const leadSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  companyName: { type: String, default: "" },
-  businessType: { type: String, default: "" },
-  address: { type: String, default: "" },
-  phone: { type: String, required: true, unique: true },
-  status: { type: String, default: "ያልተደወለ" },
-  comment: { type: String, default: "" },
-  salesPerson: { type: String, default: "" },
-  uploadedBy: { type: String, default: "" },
-  updatedBy: { type: String, default: "" },
-  deletedBy: { type: String, default: "" },
-  date: { type: Date, default: Date.now },
-});
-const Lead = mongoose.model("Lead", leadSchema);
 
 // 2. User Schema
 const userSchema = new mongoose.Schema({
@@ -27,16 +11,7 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model("User", userSchema);
 
-// 3. Contact Schema
-const contactSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  message: { type: String, required: true },
-  reply: { type: String, default: "" },
-  status: { type: String, default: "በጥበቃ ላይ" },
-  date: { type: Date, default: Date.now },
-});
-const Contact = mongoose.model("Contact", contactSchema);
+
 
 // 4. Employee Schema
 const employeeSchema = new mongoose.Schema({
@@ -65,19 +40,9 @@ const employeeSchema = new mongoose.Schema({
 });
 const Employee = mongoose.model("Employee", employeeSchema);
 
-// 5. Project Schema
-const projectSchema = new mongoose.Schema({
-  title: String,
-  link: String,
-  imageUrl: String,
-  date: { type: Date, default: Date.now },
-});
-const Project = mongoose.model("Project", projectSchema);
+
 
 module.exports = {
-  Lead,
   User,
-  Contact,
   Employee,
-  Project,
 };
