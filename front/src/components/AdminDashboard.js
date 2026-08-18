@@ -30,7 +30,6 @@ function AdminDashboard({
   useEffect(() => {
     fetchMessages();
     fetchAdmins();
-    fetchUsers();
     fetchHrs();
     const interval = setInterval(() => {
       fetchMessages();
