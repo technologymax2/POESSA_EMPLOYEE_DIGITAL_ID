@@ -63,7 +63,7 @@ function App() {
         }
       })
       .catch((err) => {
-        console.error("ፕሮጀክቶችን ማምጣት አልተቻለም", err);
+        console.error("አልተቻለም", err);
         setProjects([]);
       });
   }, [API_BASE_URL]);
@@ -140,7 +140,7 @@ function App() {
         </nav>
         <header className="max-w-4xl mx-auto px-6 py-16 text-center">
           <h1 className="text-3xl sm:text-5xl font-extrabold text-gray-900 mb-6">
-            እንኳን ወደ <span className="text-blue-600">POESSA</span> በሰላም መጡ!
+            እንኳን ወደ <span className="text-blue-600">የ/ግ/ድ/ሰ/ማ/ዋ/አ</span> በሰላም መጡ!
           </h1>
           <p className="text-lg text-gray-600">የሰራተኞች ዲጂታል መታወቂያ እና ማስተዋቂያ ሰሌዳ ማስተዳደሪያ ስርዓት</p>
         </header>
