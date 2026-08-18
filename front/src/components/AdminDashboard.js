@@ -71,15 +71,6 @@ function AdminDashboard({
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/users`);
-      const data = await res.json();
-      if (data.success) setUserList(data.users);
-    } catch (err) {
-      console.error("ተጠቃሚዎችን ማምጣት አልተቻለም");
-    }
-  };
 
   const fetchHrs = async () => {
     try {
