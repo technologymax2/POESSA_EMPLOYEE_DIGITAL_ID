@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Footer from './Footer';
 
-const API_BASE_URL = "https://max-tech-backend.onrender.com";
+const API_BASE_URL = "https://poessa-employee-digital-id.onrender.com";
 const FRONTEND_URL = "https://poessa-employee-digital-id.vercel.app";
 
 function HRPrintCartPage({ handleLogout }) {
