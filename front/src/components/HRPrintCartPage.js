@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Footer from './Footer';
 
 const API_BASE_URL = "https://max-tech-backend.onrender.com";
-const FRONTEND_URL = "https://max-technology-website.vercel.app";
+const FRONTEND_URL = "https://poessa-employee-digital-id.vercel.app";
 
 function HRPrintCartPage({ handleLogout }) {
   const [searchTerm, setSearchTerm] = useState('');
