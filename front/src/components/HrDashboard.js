@@ -22,7 +22,8 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
     addressAmh: '',
     addressEng: '',
     zone: '',
-    city: '',
+    branchEng: '',
+    branchAmh: '',
     nationality: '',
     phoneNumber: '',
     woreda: '',
@@ -195,7 +196,9 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
       addressAmh: emp.addressAmh || '',
       addressEng: emp.addressEng || '',
       zone: emp.zone || '',
-      city: emp.city || '',
+      
+    branchEng: emp.branchEng || '',
+    branchAmh: emp.branchAmh || '',
       nationality: emp.nationality || '',
       phoneNumber: emp.phoneNumber || '',
       woreda: emp.woreda || '',
@@ -285,7 +288,8 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
           addressAmh: '',
           addressEng: '',
           zone: '',
-          city: '',
+    branchEng:  '',
+    branchAmh:  '',
           nationality: '',
           phoneNumber: '',
           woreda: '',
@@ -350,7 +354,8 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
           <button onClick={() => { 
             setActiveTab('register'); 
             setEditingEmployeeId(null); 
-            setEmployeeForm({ nameAmh: '', nameEng: '', age: '', faydaNumber: '', dateOfIssue: '', expireDate: '', addressAmh: '', addressEng: '', zone: '', city: '', nationality: '', phoneNumber: '', woreda: '', positionAmh: '', positionEng: '' });
+            setEmployeeForm({ nameAmh: '', nameEng: '', age: '', faydaNumber: '', dateOfIssue: '', expireDate: '', addressAmh: '', addressEng: '', zone: '',  branchEng:  '',
+    branchAmh:  '', nationality: '', phoneNumber: '', woreda: '', positionAmh: '', positionEng: '' });
             setImagePreview(null);
             setSidebarOpen(false); 
           }} className={`w-full text-left p-3 rounded-xl font-bold transition ${activeTab === 'register' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}>➕ አዲስ ሰራተኛ መመዝገቢያ</button>
@@ -462,8 +467,10 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input type="text" name="nationality" placeholder="ዜግነት / Nationality" value={employeeForm.nationality} onChange={handleChange} required className="p-3 bg-gray-900 border border-gray-700 rounded-xl text-white text-sm" />
-                    <input type="text" name="city" placeholder="ከተማ / City" value={employeeForm.city} onChange={handleChange} required className="p-3 bg-gray-900 border border-gray-700 rounded-xl text-white text-sm" />
-                  </div>
+                    <input type="text" name="branchEng" placeholder="Branch office(English)" value={employeeForm.branchEng} onChange={handleChange} required className="p-3 bg-gray-900 border border-gray-700 rounded-xl text-white text-sm" />
+                  <input type="text" name="branchAmh" placeholder="ቅርንጫፍ መስሪያ ቤት (አማርኛ )" value={employeeForm.branchAmh} onChange={handleChange} required className="p-3 bg-gray-900 border border-gray-700 rounded-xl text-white text-sm" />
+                 
+                      </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <input type="text" name="addressAmh" placeholder="አድራሻ (አማርኛ)" value={employeeForm.addressAmh} onChange={handleChange} required className="p-3 bg-gray-900 border border-gray-700 rounded-xl text-white text-sm" />
@@ -496,7 +503,7 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                         type="button" 
                         onClick={() => {
                           setEditingEmployeeId(null);
-                          setEmployeeForm({ nameAmh: '', nameEng: '', age: '', faydaNumber: '', dateOfIssue: '', expireDate: '', addressAmh: '', addressEng: '', zone: '', city: '', nationality: '', phoneNumber: '', woreda: '', positionAmh: '', positionEng: '' });
+                          setEmployeeForm({ nameAmh: '', nameEng: '', age: '', faydaNumber: '', dateOfIssue: '', expireDate: '', addressAmh: '', addressEng: '', zone: '',  branchAmh: '',  branchEng: '', nationality: '', phoneNumber: '', woreda: '', positionAmh: '', positionEng: '' });
                           setImagePreview(null);
                         }} 
                         className="py-3.5 px-5 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-xl transition"
@@ -682,11 +689,13 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                         </div>
                         <div className="flex justify-between border-b border-white/10 pb-0.5">
                           <span className="text-gray-400 font-medium">አድራሻ:</span>
+                         
                           <span className="text-white text-right truncate max-w-[120px]">{selectedIdCard.addressAmh || selectedIdCard.addressEng || '-'}</span>
                         </div>
                         <div className="flex justify-between border-b border-white/10 pb-0.5">
-                          <span className="text-gray-400 font-medium">ከተማ:</span>
-                          <span className="text-white">{selectedIdCard.city || '-'}</span>
+                          <span className="text-gray-400 font-medium">Branch/ቅርንጫፍ:</span>
+                            <span className="text-white">{selectedIdCard.branchEng || '-'}</span>/
+                          <span className="text-white">{selectedIdCard.branchAmh || '-'}</span>
                         </div>
                         <div className="flex justify-between pb-0.5">
                           <span className="text-gray-400 font-medium">ስልክ:</span>
@@ -788,7 +797,9 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                             <h3 className="text-[10px] font-semibold text-gray-300 leading-tight">{selectedIdCard.nameEng}</h3>
                             <p className="text-[9px] text-[#d4af37] font-bold">{selectedIdCard.positionAmh}</p>
                             <div className="text-[8px] text-gray-300 pt-0.5">
-                              <div>አድራሻ: {selectedIdCard.city}</div>
+                               <span className="text-gray-400 font-medium">Branch/ቅርንጫፍ:</span>
+                            <span className="text-white">{selectedIdCard.branchEng || '-'}</span>/
+                          <span className="text-white">{selectedIdCard.branchAmh || '-'}</span>
                               <div>ስልክ: {selectedIdCard.phoneNumber}</div>
                             </div>
                           </div>
