@@ -319,32 +319,50 @@ router.get("/hr/search", async (req, res) => {
   }
 });
 
-router.put("/employees/resign/:id", async (req, res) => {
+// ============================================================
+// EMPLOYEE RESIGNATION
+// ============================================================
+
+router.put("/hr/employees/:id/resign", async (req, res) => {
   try {
+    const {
+      resignedDate,
+      resignationReason
+    } = req.body;
+
     const updatedEmployee = await Employee.findByIdAndUpdate(
       req.params.id,
-      { status: "resigned" },
-      { new: true, runValidators: true }
+      {
+        status: "resigned",
+        approved: false,
+        resignedDate: resignedDate || new Date().toISOString().split("T")[0],
+        resignationReason: resignationReason || "",
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
     );
 
     if (!updatedEmployee) {
       return res.status(404).json({
         success: false,
-        error: "ሰራተኛው አልተገኘም!",
+        error: "ሰራተኛው አልተገኘም!"
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "ሰራተኛው እንደለቀቀ ተመዝግቧል",
+      message: "ሰራተኛው ከድርጅቱ መልቀቁ ተመዝግቧል!",
       employee: updatedEmployee,
     });
+
   } catch (error) {
     console.error("Employee resignation error:", error);
 
     res.status(500).json({
       success: false,
-      error: "ስህተት ተፈጥሯል",
+      error: "የሰራተኛውን የስራ መልቀቅ መመዝገብ አልተቻለም!"
     });
   }
 });
