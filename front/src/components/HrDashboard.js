@@ -324,6 +324,73 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
     }
   };
 
+  // ============================================================
+// EMPLOYEE RESIGNATION
+// ============================================================
+
+const handleResignEmployee = async (emp) => {
+  const resignedDate = window.prompt(
+    "የስራ መልቀቂያ ቀን ያስገቡ (YYYY-MM-DD):",
+    new Date().toISOString().split("T")[0]
+  );
+
+  if (!resignedDate) return;
+
+  const resignationReason = window.prompt(
+    "የስራ መልቀቂያ ምክንያት ያስገቡ:"
+  );
+
+  if (resignationReason === null) return;
+
+  const confirmed = window.confirm(
+    `${emp.nameAmh || emp.nameEng} ድርጅቱን ለቋል ብለው መመዝገብ ይፈልጋሉ?`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    setLoading(true);
+
+    const res = await fetch(
+      `${API_BASE_URL}/api/hr/employees/${emp._id}/resign`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          resignedDate,
+          resignationReason,
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      setEmployeeStatus(
+        "✅ ሰራተኛው ከድርጅቱ መልቀቁ ተመዝግቧል!"
+      );
+
+      await fetchEmployees();
+    } else {
+      setEmployeeStatus(
+        data.error || "የስራ መልቀቁን መመዝገብ አልተቻለም!"
+      );
+    }
+
+  } catch (error) {
+    console.error("Resignation error:", error);
+
+    setEmployeeStatus(
+      "❌ የሰራተኛውን የስራ መልቀቅ ማስመዝገብ አልተቻለም!"
+    );
+
+  } finally {
+    setLoading(false);
+  }
+};
+
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col justify-between p-4 sm:p-6 lg:p-8 relative print:bg-white print:p-0">
       
@@ -545,17 +612,42 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                         </td>
                         <td className="p-3 font-mono text-xs text-blue-300">{emp.faydaNumber}</td>
                         <td className="p-3">
-                          <div className="flex gap-2 items-center">
-                            <button onClick={() => { setSelectedIdCard(emp); setPrintCardType('id-card'); }} className="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-lg transition">
-                              🪪 እይ/አትም
-                            </button>
-                            <button onClick={() => handleEditClick(emp)} className="px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white text-xs font-semibold rounded-lg transition">
-                              ✏️ አስተካክል
-                            </button>
-                            <button onClick={() => handleDeleteEmployee(emp._id)} className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition">
-                              🗑 አጥፋ
-                            </button>
-                          </div>
+                         <div className="flex gap-2 items-center">
+
+  <button
+    onClick={() => {
+      setSelectedIdCard(emp);
+      setPrintCardType("id-card");
+    }}
+    className="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-lg transition"
+  >
+    🪪 እይ/አትም
+  </button>
+
+  <button
+    onClick={() => handleEditClick(emp)}
+    className="px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white text-xs font-semibold rounded-lg transition"
+  >
+    ✏️ አስተካክል
+  </button>
+
+  {emp.status !== "resigned" && (
+    <button
+      onClick={() => handleResignEmployee(emp)}
+      className="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold rounded-lg transition"
+    >
+      🚪 ስራ ለቋል
+    </button>
+  )}
+
+  <button
+    onClick={() => handleDeleteEmployee(emp._id)}
+    className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition"
+  >
+    🗑 አጥፋ
+  </button>
+
+</div>
                         </td>
                       </tr>
                     ))}
