@@ -955,17 +955,10 @@ const handleResignEmployee = async (emp) => {
         </div>
       )}
 
-      {verifiedEmployeeModal && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="bg-gray-800 border-2 border-green-500 rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center relative animate-fade-in">
-            <button 
-              onClick={() => { setVerifiedEmployeeModal(null); window.location.href = "/"; }} 
-              className="absolute top-3 right-3 text-gray-400 hover:text-white font-bold bg-gray-700 w-7 h-7 rounded-full flex items-center justify-center"
-            >
-              ✕
-            </button>
-
-            {verifiedEmployeeModal.verificationStatus === "resigned" ? (
+     {(
+  verifiedEmployeeModal.verificationStatus === "resigned" ||
+  verifiedEmployeeModal.status === "resigned"
+) ? (
   <div className="inline-block bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold mb-4">
     🚪 የለቀቀ
   </div>
