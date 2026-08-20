@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 // ============================================================
-// 1. USER SCHEMA
+// USER SCHEMA
 // ============================================================
 
 const userSchema = new mongoose.Schema(
@@ -47,11 +47,15 @@ const User = mongoose.model("User", userSchema);
 
 
 // ============================================================
-// 2. EMPLOYEE SCHEMA
+// EMPLOYEE SCHEMA
 // ============================================================
 
 const employeeSchema = new mongoose.Schema(
   {
+    // ----------------------------------------------------------
+    // PERSONAL INFORMATION
+    // ----------------------------------------------------------
+
     nameAmh: {
       type: String,
       default: "",
@@ -77,6 +81,11 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
+
+    // ----------------------------------------------------------
+    // ID CARD DATES
+    // ----------------------------------------------------------
+
     dateOfIssue: {
       type: String,
       default: "",
@@ -88,6 +97,11 @@ const employeeSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
+
+
+    // ----------------------------------------------------------
+    // ADDRESS
+    // ----------------------------------------------------------
 
     addressAmh: {
       type: String,
@@ -119,6 +133,11 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
+
+    // ----------------------------------------------------------
+    // NATIONALITY / PHONE
+    // ----------------------------------------------------------
+
     nationality: {
       type: String,
       default: "",
@@ -130,6 +149,11 @@ const employeeSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
+
+
+    // ----------------------------------------------------------
+    // POSITION
+    // ----------------------------------------------------------
 
     positionAmh: {
       type: String,
@@ -143,11 +167,28 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
-    branch: {
+
+    // ----------------------------------------------------------
+    // BRANCH
+    // IMPORTANT: THESE WERE MISSING BEFORE
+    // ----------------------------------------------------------
+
+    branchAmh: {
       type: String,
       default: "",
       trim: true,
     },
+
+    branchEng: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+
+    // ----------------------------------------------------------
+    // ORGANIZATION INFORMATION
+    // ----------------------------------------------------------
 
     orgPhoneNumber: {
       type: String,
@@ -168,15 +209,21 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
+
+    // ----------------------------------------------------------
+    // EMPLOYEE PHOTO
+    // ----------------------------------------------------------
+
     imageUrl: {
       type: String,
       default: "",
       trim: true,
     },
 
-    // ========================================================
+
+    // ----------------------------------------------------------
     // EMPLOYEE STATUS
-    // ========================================================
+    // ----------------------------------------------------------
 
     status: {
       type: String,
@@ -195,9 +242,10 @@ const employeeSchema = new mongoose.Schema(
       default: true,
     },
 
-    // ========================================================
-    // RESIGNATION INFORMATION
-    // ========================================================
+
+    // ----------------------------------------------------------
+    // RESIGNATION
+    // ----------------------------------------------------------
 
     resignedDate: {
       type: String,
@@ -211,24 +259,21 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // ========================================================
+
+    // ----------------------------------------------------------
     // CREATED DATE
-    // ========================================================
+    // ----------------------------------------------------------
 
     date: {
       type: Date,
       default: Date.now,
     },
   },
+
   {
     timestamps: true,
   }
 );
-
-
-// ============================================================
-// 3. EMPLOYEE MODEL
-// ============================================================
 
 const Employee = mongoose.model(
   "Employee",
@@ -237,7 +282,7 @@ const Employee = mongoose.model(
 
 
 // ============================================================
-// 4. EXPORT MODELS
+// EXPORT
 // ============================================================
 
 module.exports = {
