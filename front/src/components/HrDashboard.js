@@ -965,9 +965,15 @@ const handleResignEmployee = async (emp) => {
               ✕
             </button>
 
-            <div className="inline-block bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold mb-4">
-              ✅ ትክክለኛ ሰራተኛ (Verified Employee)
-            </div>
+            {verifiedEmployeeModal.verificationStatus === "resigned" ? (
+  <div className="inline-block bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold mb-4">
+    🚪 የለቀቀ
+  </div>
+) : (
+  <div className="inline-block bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold mb-4">
+    ✅ ትክክለኛ ሰራተኛ (Verified Employee)
+  </div>
+)}
             
             <div className="w-24 h-24 mx-auto rounded-full overflow-hidden border-2 border-[#d4af37] mb-4 shadow-lg">
               <img src={verifiedEmployeeModal.imageUrl} alt={verifiedEmployeeModal.nameEng} className="w-full h-full object-cover" />
