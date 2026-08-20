@@ -835,7 +835,12 @@ function HRDashboard({ user, handleLogout, API_BASE_URL }) {
                           <div><span className="text-green-400 font-semibold">የተሰጠበት (Issue):</span> <span className="text-white font-bold">{selectedIdCard.dateOfIssue || 'N/A'}</span></div>
                           <div><span className="text-red-400 font-semibold">የሚያበቃበት (Expire):</span> <span className="text-red-400 font-bold">{selectedIdCard.expireDate || 'N/A'}</span></div>
                           <div><span className="text-gray-400">ዜግነት:</span> <span className="text-white font-medium">{selectedIdCard.nationality}</span></div>
-                          <div><span className="text-gray-400">እድሜ:</span> <span className="text-white font-medium">{selectedIdCard.age}</span></div>
+                         <div>
+  <span>አድራሻ (Address):</span>
+  <strong>
+    {selectedIdCard.addressAmh || selectedIdCard.addressEng || "-"}
+  </strong>
+</div>
                         </div>
                       </div>
 
