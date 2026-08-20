@@ -37,39 +37,64 @@ router.post("/auth/signup", async (req, res) => {
 router.post("/auth/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: "ኢሜይል እና ፓስወርድ ያስፈልጋሉ!",
+      });
+    }
+
     const cleanEmail = email.toLowerCase().trim();
 
-    let user = await User.findOne({ email: cleanEmail });
-    let role = user ? user.role : null;
+    const user = await User.findOne({
+      email: cleanEmail,
+    });
 
     if (!user) {
-      const employee = await Employee.findOne({ email: cleanEmail });
-      if (employee) {
-        user = employee;
-        role = employee.role || "hr";
-      }
+      return res.status(400).json({
+        success: false,
+        error: "ኢሜይል/ዩዘርኔም ወይም ፓስወርድ ተሳስቷል!",
+      });
     }
-
-    if (!user) return res.status(400).json({ success: false, error: "ኢሜይል/ዩዘርኔም ወይም ፓስወርድ ተሳስቷል!" });
 
     if (user.isBlocked) {
-      return res.status(403).json({ success: false, error: "አካውንትዎ በአድሚን ታግዷል! እባክዎ ባለሙያ ያነጋግሩ።" });
+      return res.status(403).json({
+        success: false,
+        error:
+          "አካውንትዎ በአድሚን ታግዷል! እባክዎ ባለሙያ ያነጋግሩ።",
+      });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ success: false, error: "ኢሜይል/ዩዘርኔም ወይም ፓስወርድ ተሳስቷል!" });
+    const isMatch = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        error:
+          "ኢሜይል/ዩዘርኔም ወይም ፓስወርድ ተሳስቷል!",
+      });
+    }
 
     res.status(200).json({
       success: true,
       user: {
         id: user._id,
-        name: user.name || user.nameAmh,
+        name: user.name,
         email: user.email,
-        role: role ? role.toLowerCase().trim() : "normal",
+        role: user.role,
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, error: "የመግባት ስህተት ተፈጥሯል" });
+    console.error("Login error:", error);
+
+    res.status(500).json({
+      success: false,
+      error: "የመግባት ስህተት ተፈጥሯል",
+    });
   }
 });
 
