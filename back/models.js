@@ -213,7 +213,17 @@ const employeeSchema = new mongoose.Schema(
       default: true,
     },
 
+resignedDate: {
+  type: String,
+  default: "",
+  trim: true,
+},
 
+resignationReason: {
+  type: String,
+  default: "",
+  trim: true,
+},
     date: {
       type: Date,
       default: Date.now,
