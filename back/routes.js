@@ -286,39 +286,48 @@ router.put("/admin/hrs/reset-password/:id", async (req, res) => {
   }
 });
 
-router.get("/hr/verify/:id", async (req, res) => {
+app.get("/api/hr/verify/:id", async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id);
-    if (!employee) {
-      return res.status(404).json({ success: false, error: "ሰራተኛው አልተገኘም!" });
-    }
-    res.status(200).json({ success: true, employee });
-  } catch (error) {
-    res.status(500).json({ success: false, error: "ሰርቨር ላይ ስህተት ተፈጥሯል" });
-  }
-});
 
-router.get("/hr/search", async (req, res) => {
-  try {
-    const { query } = req.query;
-    if (!query) {
-      return res.status(400).json({ success: false, error: "የፍለጋ ቃል አልገባም!" });
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        error: "ሰራተኛው አልተገኘም"
+      });
     }
-    
-    const employees = await Employee.find({
-      $or: [
-        { nameAmh: { $regex: query, $options: "i" } },
-        { nameEng: { $regex: query, $options: "i" } },
-        { faydaNumber: { $regex: query, $options: "i" } }
-      ]
+
+    // ==========================================
+    // ሰራተኛው ከድርጅቱ ከለቀቀ
+    // ==========================================
+    if (employee.status === "resigned") {
+      return res.json({
+        success: true,
+        employee: employee,
+        verificationStatus: "resigned",
+        verificationMessage: "የለቀቀ"
+      });
+    }
+
+    // ==========================================
+    // መደበኛ ሰራተኛ
+    // ==========================================
+    return res.json({
+      success: true,
+      employee: employee,
+      verificationStatus: "approved",
+      verificationMessage: "ትክክለኛ ሰራተኛ"
     });
 
-    res.status(200).json({ success: true, employees });
   } catch (error) {
-    res.status(500).json({ success: false, error: "ፍለጋውን ማከናወን አልተቻለም" });
+    console.error("Verify employee error:", error);
+
+    res.status(500).json({
+      success: false,
+      error: "የሰራተኛውን መረጃ ማረጋገጥ አልተቻለም"
+    });
   }
 });
-
 // ============================================================
 // EMPLOYEE RESIGNATION
 // ============================================================
