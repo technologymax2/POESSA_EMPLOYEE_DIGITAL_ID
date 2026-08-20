@@ -3,6 +3,12 @@ const mongoose = require("mongoose");
 // ============================================================
 // 1. USER SCHEMA
 // ============================================================
+// Used for:
+// - Normal users
+// - Admin users
+// - HR users
+// ============================================================
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -45,14 +51,11 @@ const userSchema = new mongoose.Schema(
 const User = mongoose.model("User", userSchema);
 
 
-// ============================================================
-// 2. EMPLOYEE SCHEMA
-// ============================================================
+
 const employeeSchema = new mongoose.Schema(
   {
-    // --------------------------------------------------------
-    // PERSONAL INFORMATION
-    // --------------------------------------------------------
+=
+
     nameAmh: {
       type: String,
       default: "",
@@ -71,9 +74,7 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // --------------------------------------------------------
-    // FAYDA
-    // --------------------------------------------------------
+
     faydaNumber: {
       type: String,
       required: true,
@@ -81,9 +82,9 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // --------------------------------------------------------
-    // ID CARD DATES
-    // --------------------------------------------------------
+
+
+
     dateOfIssue: {
       type: String,
       default: "",
@@ -96,9 +97,7 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // --------------------------------------------------------
-    // ADDRESS
-    // --------------------------------------------------------
+
     addressAmh: {
       type: String,
       default: "",
@@ -117,33 +116,35 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
+    city: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
     woreda: {
       type: String,
       default: "",
       trim: true,
     },
 
-    // --------------------------------------------------------
-    // NATIONALITY
-    // --------------------------------------------------------
+
     nationality: {
       type: String,
       default: "",
       trim: true,
     },
 
-    // --------------------------------------------------------
-    // EMPLOYEE PHONE
-    // --------------------------------------------------------
+
+
     phoneNumber: {
       type: String,
       default: "",
       trim: true,
     },
 
-    // --------------------------------------------------------
-    // POSITION
-    // --------------------------------------------------------
+
+
     positionAmh: {
       type: String,
       default: "",
@@ -156,24 +157,16 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // --------------------------------------------------------
-    // BRANCH
-    // --------------------------------------------------------
-    branchAmh: {
+
+
+    branch: {
       type: String,
       default: "",
       trim: true,
     },
 
-    branchEng: {
-      type: String,
-      default: "",
-      trim: true,
-    },
 
-    // --------------------------------------------------------
-    // ORGANIZATION INFORMATION
-    // --------------------------------------------------------
+
     orgPhoneNumber: {
       type: String,
       default: "",
@@ -187,9 +180,8 @@ const employeeSchema = new mongoose.Schema(
       lowercase: true,
     },
 
-    // --------------------------------------------------------
-    // IMAGES
-    // --------------------------------------------------------
+
+
     logoUrl: {
       type: String,
       default: "",
@@ -202,12 +194,16 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // --------------------------------------------------------
-    // EMPLOYEE STATUS
-    // --------------------------------------------------------
+
+
     status: {
       type: String,
-      enum: ["approved", "pending", "resigned", "inactive"],
+      enum: [
+        "approved",
+        "pending",
+        "resigned",
+        "inactive",
+      ],
       default: "approved",
       trim: true,
     },
@@ -217,25 +213,27 @@ const employeeSchema = new mongoose.Schema(
       default: true,
     },
 
-    // --------------------------------------------------------
-    // CREATED DATE
-    // --------------------------------------------------------
+
     date: {
       type: Date,
       default: Date.now,
     },
   },
+
   {
     timestamps: true,
   }
 );
 
-const Employee = mongoose.model("Employee", employeeSchema);
 
 
-// ============================================================
-// 3. EXPORT MODELS
-// ============================================================
+
+const Employee = mongoose.model(
+  "Employee",
+  employeeSchema
+);
+
+
 module.exports = {
   User,
   Employee,
