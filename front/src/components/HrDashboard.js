@@ -1141,17 +1141,7 @@ const handleResignEmployee = async (emp) => {
               </div>
             )}
 
-            {/* Return Button */}
-            <button
-              type="button"
-              onClick={() => {
-                setVerifiedEmployeeModal(null);
-                window.history.pushState({}, "", "/");
-              }}
-              className="mt-5 w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition"
-            >
-              ወደ ዋናው ገጽ ተመለስ
-            </button>
+        
 
           </div>
         </div>
