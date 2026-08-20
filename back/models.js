@@ -3,11 +3,6 @@ const mongoose = require("mongoose");
 // ============================================================
 // 1. USER SCHEMA
 // ============================================================
-// Used for:
-// - Normal users
-// - Admin users
-// - HR users
-// ============================================================
 
 const userSchema = new mongoose.Schema(
   {
@@ -51,11 +46,12 @@ const userSchema = new mongoose.Schema(
 const User = mongoose.model("User", userSchema);
 
 
+// ============================================================
+// 2. EMPLOYEE SCHEMA
+// ============================================================
 
 const employeeSchema = new mongoose.Schema(
   {
-=
-
     nameAmh: {
       type: String,
       default: "",
@@ -74,16 +70,12 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
-
     faydaNumber: {
       type: String,
       required: true,
       unique: true,
       trim: true,
     },
-
-
-
 
     dateOfIssue: {
       type: String,
@@ -96,7 +88,6 @@ const employeeSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
-
 
     addressAmh: {
       type: String,
@@ -128,22 +119,17 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
-
     nationality: {
       type: String,
       default: "",
       trim: true,
     },
 
-
-
     phoneNumber: {
       type: String,
       default: "",
       trim: true,
     },
-
-
 
     positionAmh: {
       type: String,
@@ -157,15 +143,11 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
-
-
     branch: {
       type: String,
       default: "",
       trim: true,
     },
-
-
 
     orgPhoneNumber: {
       type: String,
@@ -180,8 +162,6 @@ const employeeSchema = new mongoose.Schema(
       lowercase: true,
     },
 
-
-
     logoUrl: {
       type: String,
       default: "",
@@ -194,7 +174,9 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
     },
 
-
+    // ========================================================
+    // EMPLOYEE STATUS
+    // ========================================================
 
     status: {
       type: String,
@@ -213,36 +195,50 @@ const employeeSchema = new mongoose.Schema(
       default: true,
     },
 
-resignedDate: {
-  type: String,
-  default: "",
-  trim: true,
-},
+    // ========================================================
+    // RESIGNATION INFORMATION
+    // ========================================================
 
-resignationReason: {
-  type: String,
-  default: "",
-  trim: true,
-},
+    resignedDate: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    resignationReason: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    // ========================================================
+    // CREATED DATE
+    // ========================================================
+
     date: {
       type: Date,
       default: Date.now,
     },
   },
-
   {
     timestamps: true,
   }
 );
 
 
-
+// ============================================================
+// 3. EMPLOYEE MODEL
+// ============================================================
 
 const Employee = mongoose.model(
   "Employee",
   employeeSchema
 );
 
+
+// ============================================================
+// 4. EXPORT MODELS
+// ============================================================
 
 module.exports = {
   User,
