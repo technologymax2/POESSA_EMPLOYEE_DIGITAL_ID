@@ -963,19 +963,24 @@ const handleResignEmployee = async (emp) => {
 
           <div className="relative w-full max-w-md bg-gray-800 border border-gray-700 rounded-2xl shadow-2xl p-6 text-center">
 
-            {/* Close Button */}
-            <button
-              type="button"
-              onClick={() => {
-                setVerifiedEmployeeModal(null);
-                window.history.pushState({}, "", "/");
-              }}
-              className="absolute top-3 right-3 w-9 h-9 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center font-bold transition"
-            >
-              ✕
-            </button>
 
-            {/* Employee Status */}
+
+
+
+
+
+
+
+
+
+
+        
+
+        
+            
+
+
+
             {(
               verifiedEmployeeModal.verificationStatus === "resigned" ||
               verifiedEmployeeModal.status === "resigned"
