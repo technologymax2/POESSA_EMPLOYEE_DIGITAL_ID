@@ -340,21 +340,42 @@ function HRPrintCartPage({ handleLogout }) {
                         margin-bottom: 4mm !important;
                       }
 
-                      .print-card-box,
-                      .print-badge-box {
-                        width: 85.6mm !important;
-                        height: 54mm !important;
-                        min-width: 85.6mm !important;
-                        min-height: 54mm !important;
-                        background-color: #132943 !important;
-                        color: #ffffff !important;
-                        border: 2px solid #d4af37 !important;
-                        box-shadow: none !important;
-                        border-radius: 4mm !important;
-                        overflow: hidden !important;
-                        -webkit-print-color-adjust: exact !important;
-                        print-color-adjust: exact !important;
-                      }
+
+.print-card-box {
+  width: 85.6mm !important;
+  height: 54mm !important;
+  min-width: 85.6mm !important;
+  min-height: 54mm !important;
+
+  background-color: #132943 !important;
+  color: #ffffff !important;
+  border: 2px solid #d4af37 !important;
+  box-shadow: none !important;
+  border-radius: 4mm !important;
+  overflow: hidden !important;
+
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+
+
+.print-badge-box {
+  width: 54mm !important;
+  height: 85.6mm !important;
+  min-width: 54mm !important;
+  min-height: 85.6mm !important;
+
+  background-color: #132943 !important;
+  color: #ffffff !important;
+  border: 2px solid #d4af37 !important;
+  box-shadow: none !important;
+  border-radius: 4mm !important;
+  overflow: hidden !important;
+
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
                     }
                   `,
                 }}
