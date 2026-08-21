@@ -342,8 +342,8 @@ function HRPrintCartPage({ handleLogout }) {
 
 
 .print-card-box {
-  width: 75mm !important;
-  height: 115mm !important;
+  width: 85mm !important;
+  height: 125mm !important;
 
   min-width: 70mm !important;
   min-height: 105mm !important;
