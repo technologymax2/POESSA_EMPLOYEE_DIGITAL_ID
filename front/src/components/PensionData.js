@@ -233,7 +233,7 @@ const EmployeeDetailForm = ({ employee, onSave, onDelete }) => {
     const inputClass = "block w-full rounded-lg border border-gray-400 p-4 text-lg shadow-sm focus:border-blue-600 focus:ring-blue-600";
     const labelClass = "block text-lg font-semibold text-gray-800 mb-2";
 
-    const fieldGroups = [
+ 
        const fieldGroups = [
     {
         title: "የግል መረጃ",
