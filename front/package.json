@@ -16,6 +16,7 @@
   "react-dom": "^19.2.8",
   "react-scripts": "5.0.1",
   "react-router-dom": "^6.4.0",
+  "@headlessui/react": "^2.2.9",
   "web-vitals": "^2.1.4",
   "xlsx": "^0.18.5"
 },
