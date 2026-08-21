@@ -410,7 +410,7 @@ function HRPrintCartPage({ handleLogout }) {
                          <span className="text-white">{emp.branchEng || '-'}</span>/
                         <span className="text-white">{emp.branchAmh || '-'}</span>
                                   </div>
-                                </div>
+                              
                               </div>
 
                               <div className="flex flex-col items-center bg-black/30 p-2 rounded-xl border border-[#d4af37]/30 shrink-0">
