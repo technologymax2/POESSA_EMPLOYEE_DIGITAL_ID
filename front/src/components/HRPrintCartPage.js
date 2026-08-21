@@ -91,7 +91,7 @@ function HRPrintCartPage({ handleLogout }) {
                   : 'bg-gray-900 border-gray-700 text-gray-400 hover:bg-gray-700'
               }`}
             >
-              መደበኛ መታወቂያ (Standard ID)
+               የደረት ባጅ (Chest Badge) 
             </button>
             <button
               type="button"
@@ -102,12 +102,12 @@ function HRPrintCartPage({ handleLogout }) {
                   : 'bg-gray-900 border-gray-700 text-gray-400 hover:bg-gray-700'
               }`}
             >
-              የደረት ባጅ (Chest Badge)
+            መደበኛ መታወቂያ (Standard ID)
             </button>
           </div>
         </div>
 
-        {/* ፍለጋ ផ្នែក */}
+        
         <div className="bg-gray-800 p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-700 print:hidden">
           <h3 className="text-lg sm:text-xl font-bold mb-4 text-[#d4af37]">🔍 ሰራተኛ በስልክ ወይም በፋይዳ ቁጥር ፈልግ</h3>
           
@@ -273,8 +273,8 @@ function HRPrintCartPage({ handleLogout }) {
                                   <span className="text-[10px] font-black text-[#132943]">LOGO</span>
                                 )}
                               </div>
-                              <h2 className="text-[14px] font-black tracking-widest text-white">MAX TECHNOLOGY</h2>
-                              <p className="text-[10px] text-[#d4af37] font-bold tracking-wider">EMPLOYEE ID CARD</p>
+                              <h2 className="text-[14px] font-black tracking-widest text-white">POESSA</h2>
+                              <p className="text-[10px] text-[#d4af37] font-bold tracking-wider">ይግል ድርጅት ሰራተኞች ማህበራዊ ዋስትና አስተዳደር</p>
                             </div>
 
                             {/* enlarged photo */}
@@ -300,10 +300,15 @@ function HRPrintCartPage({ handleLogout }) {
                                 <span className="text-gray-300 font-bold">ስልክ:</span>
                                 <span className="font-mono text-white font-bold">{emp.phoneNumber || '-'}</span>
                               </div>
+                              <div className="flex justify-between border-b border-white/10 pb-0.5">
+                          <span className="text-gray-400 font-medium">Branch/ቅርንጫፍ:</span>
+                            <span className="text-white">{selectedIdCard.branchEng || '-'}</span>/
+                          <span className="text-white">{selectedIdCard.branchAmh || '-'}</span>
+                        </div>
                             </div>
 
                             <div className="text-center py-1.5 text-[9.5px] font-bold text-[#d4af37] bg-[#0c1b2d] -mx-3 -mb-3 border-t border-[#d4af37]/30 z-10">
-                              Max Technology Employee Card
+                              የግል ድርጅት ሰራተኞ ማህበራዊ ዋስትና አስተዳደር
                             </div>
                           </div>
 
@@ -352,7 +357,7 @@ function HRPrintCartPage({ handleLogout }) {
                             </div>
 
                             <div className="relative z-10 bg-[#0c1b2d] -mx-4 -mb-4 py-2 px-2 text-center border-t border-[#d4af37]/30">
-                              <p className="text-[9px] font-bold text-gray-300">Authorized Employee ID - Max Technology</p>
+                              <p className="text-[9px] font-bold text-gray-300">Private Organizations Employees Social Security Administration </p>
                             </div>
                           </div>
 
@@ -380,8 +385,8 @@ function HRPrintCartPage({ handleLogout }) {
                                   )}
                                 </div>
                                 <div>
-                                  <h2 className="text-[12px] font-black tracking-wider text-white">MAX TECHNOLOGY</h2>
-                                  <p className="text-[8.5px] text-[#d4af37] font-bold">EMPLOYEE BADGE</p>
+                                  <h2 className="text-[12px] font-black tracking-wider text-white">POESSA</h2>
+                                  <p className="text-[8.5px] text-[#d4af37] font-bold">የግል ድርጅት ሰራተኞ ማህበራዊ ዋስትና አስተዳደር</p>
                                 </div>
                               </div>
                               <div className="text-right text-[8.5px] font-semibold text-gray-200">
@@ -400,7 +405,10 @@ function HRPrintCartPage({ handleLogout }) {
                                   <h3 className="text-[11px] font-bold text-gray-200 leading-tight">{emp.nameEng}</h3>
                                   <p className="text-[10px] text-[#d4af37] font-bold">{emp.positionAmh}</p>
                                   <div className="text-[9.5px] font-semibold text-gray-200 mt-0.5">
-                                    <div>ከተማ: {emp.city} | ስልክ: {emp.phoneNumber}</div>
+                                    <div>            
+                                    <span className="text-gray-400 font-medium">Branch/ቅርንጫፍ:</span>
+                            <span className="text-white">{selectedIdCard.branchEng || '-'}</span>/
+                          <span className="text-white">{selectedIdCard.branchAmh || '-'}</span> | ስልክ: {emp.phoneNumber}</div>
                                   </div>
                                 </div>
                               </div>
@@ -414,7 +422,7 @@ function HRPrintCartPage({ handleLogout }) {
                             </div>
 
                             <div className="bg-[#0c1b2d] -mx-4 -mb-4 py-1.5 px-2 text-center border-t border-[#d4af37]/30 text-[8.5px] font-bold text-gray-300 relative z-10">
-                              Authorized Corporate Badge - Max Technology
+                              የሰራተኛ መታወቂያ - POESSA
                             </div>
                           </div>
 
@@ -423,7 +431,7 @@ function HRPrintCartPage({ handleLogout }) {
                             <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-[#d4af37]/10 to-transparent pointer-events-none rounded-tr-full"></div>
 
                             <div className="flex justify-between items-center border-b border-white/20 pb-2 relative z-10">
-                              <h3 className="text-[11px] font-black text-[#d4af37] tracking-wider">የባጅ ተጨማሪ መረጃ / Additional Details</h3>
+                              <h3 className="text-[11px] font-black text-[#d4af37] tracking-wider">የምስሪያቤታችን ባልደረባ ናቸው</h3>
                               <span className="text-[8.5px] font-mono font-bold text-gray-200">ፋይዳ: {emp.faydaNumber}</span>
                             </div>
 
@@ -437,7 +445,7 @@ function HRPrintCartPage({ handleLogout }) {
                             </div>
 
                             <div className="bg-[#0c1b2d] -mx-4 -mb-4 py-1.5 px-2 text-center border-t border-[#d4af37]/30 text-[8.5px] font-bold text-gray-300 relative z-10">
-                              Max Technology - Official Badge Identification
+                              POESSA - Private Organizations Employees Social Security Administration
                             </div>
                           </div>
 
