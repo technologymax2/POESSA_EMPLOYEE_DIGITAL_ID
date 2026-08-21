@@ -342,10 +342,13 @@ function HRPrintCartPage({ handleLogout }) {
 
 
 .print-card-box {
-  width: 54mm !important;
-  height: 85.6mm !important;
-  min-width: 54mm !important;
-  min-height: 85.6mm !important;
+  width: 70mm !important;
+  height: 105mm !important;
+
+  min-width: 70mm !important;
+  min-height: 105mm !important;
+
+  box-sizing: border-box !important;
 
   background-color: #132943 !important;
   color: #ffffff !important;
