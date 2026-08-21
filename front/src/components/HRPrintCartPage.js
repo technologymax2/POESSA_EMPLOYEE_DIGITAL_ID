@@ -789,14 +789,11 @@ function HRPrintCartPage({ handleLogout }) {
                                   </span>
                                 </div>
    
-                                <div className="flex justify-between border-b border-white/20 pb-0.5">
-                                <span className="text-gray-300 font-bold">
-                                  አድራሻ:  {emp.addressAmh ||
-                                    emp.addressEng ||
-                                </span>
-
-                              
-                              </div>
+                               <div className="flex justify-between border-b border-white/10 pb-0.5">
+                          <span className="text-gray-400 font-medium">አድራሻ:</span>
+                         
+                          <span className="text-white text-right truncate max-w-[120px]">{selectedIdCard.addressAmh || selectedIdCard.addressEng || '-'}</span>
+                        </div>
     
                               </div>
                             </div>
