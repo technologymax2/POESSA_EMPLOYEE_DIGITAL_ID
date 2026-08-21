@@ -788,15 +788,19 @@ function HRPrintCartPage({ handleLogout }) {
                                       "Ethiopian"}
                                   </span>
                                 </div>
+   
+                                <div className="flex justify-between border-b border-white/20 pb-0.5">
+                                <span className="text-gray-300 font-bold">
+                                  አድራሻ:
+                                </span>
 
-                                <div>
-                                  <span className="text-gray-300 font-bold">
-                                    እድሜ:
-                                  </span>{" "}
-                                  <span className="text-white font-black">
-                                    {emp.age || "-"}
-                                  </span>
-                                </div>
+                                <span className="text-white font-bold text-right truncate max-w-[150px]">
+                                  {emp.addressAmh ||
+                                    emp.addressEng ||
+                                    "Addis Ababa"}
+                                </span>
+                              </div>
+    
                               </div>
                             </div>
 
