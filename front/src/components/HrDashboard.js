@@ -707,8 +707,8 @@ const handleResignEmployee = async (emp) => {
               }
 
 .print-card-box {
-  width: 54mm !important;
-  height: 85.6mm !important;
+  width: 58mm !important;
+  height: 87.6mm !important;
   min-width: 54mm !important;
   min-height: 85.6mm !important;
 
