@@ -8,7 +8,7 @@ import AdminDashboard from "./components/AdminDashboard";
 import HrDashboard from "./components/HrDashboard";
 import HRPrintCartPage from "./components/HRPrintCartPage";
 import Footer from "./components/Footer";
-import PensionData from "./PensionData"; // አዲሱ የጡረታ ገጽ
+import PensionData from "./components/PensionData"; // አዲሱ የጡረታ ገጽ
 
 import logoImg from "./logo.jpg"; // የሎጎ ፋይል መኖር አለበት
 
