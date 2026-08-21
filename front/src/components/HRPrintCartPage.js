@@ -302,8 +302,8 @@ function HRPrintCartPage({ handleLogout }) {
                               </div>
                               <div className="flex justify-between border-b border-white/10 pb-0.5">
                           <span className="text-gray-400 font-medium">Branch/ቅርንጫፍ:</span>
-                            <span className="text-white">{selectedIdCard.branchEng || '-'}</span>/
-                          <span className="text-white">{selectedIdCard.branchAmh || '-'}</span>
+<span className="text-white">{emp.branchEng || '-'}</span>/
+<span className="text-white">{emp.branchAmh || '-'}</span>
                         </div>
                             </div>
 
@@ -407,8 +407,8 @@ function HRPrintCartPage({ handleLogout }) {
                                   <div className="text-[9.5px] font-semibold text-gray-200 mt-0.5">
                                     <div>            
                                     <span className="text-gray-400 font-medium">Branch/ቅርንጫፍ:</span>
-                            <span className="text-white">{selectedIdCard.branchEng || '-'}</span>/
-                          <span className="text-white">{selectedIdCard.branchAmh || '-'}</span> | ስልክ: {emp.phoneNumber}</div>
+                         <span className="text-white">{emp.branchEng || '-'}</span>/
+                        <span className="text-white">{emp.branchAmh || '-'}</span>
                                   </div>
                                 </div>
                               </div>
