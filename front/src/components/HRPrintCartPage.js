@@ -342,10 +342,10 @@ function HRPrintCartPage({ handleLogout }) {
 
 
 .print-card-box {
-  width: 85.6mm !important;
-  height: 54mm !important;
-  min-width: 85.6mm !important;
-  min-height: 54mm !important;
+  width: 54mm !important;
+  height: 85.6mm !important;
+  min-width: 54mm !important;
+  min-height: 85.6mm !important;
 
   background-color: #132943 !important;
   color: #ffffff !important;
@@ -360,11 +360,11 @@ function HRPrintCartPage({ handleLogout }) {
 
 
 
-.print-badge-box {
-  width: 54mm !important;
-  height: 85.6mm !important;
-  min-width: 54mm !important;
-  min-height: 85.6mm !important;
+.print-badge-box. {
+  width: 85.6mm !important;
+  height: 54mm !important;
+  min-width: 85.6mm !important;
+  min-height: 54mm !important;
 
   background-color: #132943 !important;
   color: #ffffff !important;
