@@ -791,14 +791,11 @@ function HRPrintCartPage({ handleLogout }) {
    
                                 <div className="flex justify-between border-b border-white/20 pb-0.5">
                                 <span className="text-gray-300 font-bold">
-                                  አድራሻ:
+                                  አድራሻ:  {emp.addressAmh ||
+                                    emp.addressEng ||
                                 </span>
 
-                                <span className="text-white font-bold text-right truncate max-w-[150px]">
-                                  {emp.addressAmh ||
-                                    emp.addressEng ||
-                                    "Addis Ababa"}
-                                </span>
+                              
                               </div>
     
                               </div>
