@@ -3,7 +3,6 @@ import Login from "./components/Login";
 import AdminDashboard from "./components/AdminDashboard";
 import HrDashboard from "./components/HrDashboard";
 import HRPrintCartPage from "./components/HRPrintCartPage";
-import PensionData from "./components/PensionData";
 import Footer from "./components/Footer";
 import logoImg from "./logo.jpg";
 
@@ -25,7 +24,6 @@ function App() {
   });
   const [adminAddStatus, setAdminAddStatus] = useState("");
   const [projects, setProjects] = useState([]);
-  
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -251,17 +249,6 @@ function App() {
           >
             🖨️ መታወቂያ ማተሚያ ጋሪ (Print Cart)
           </button>
-
-              <button 
-  onClick={() => setCurrentScreen("pension-data")}
-  className={`px-4 py-2 rounded-xl text-sm font-bold transition ${
-    currentScreen === "pension-data"
-      ? "bg-blue-600 text-white"
-      : "bg-gray-700 text-gray-300"
-  }`}
->
-  💰 የጡረታ መረጃ
-</button>
           <button 
             onClick={handleLogout}
             className="ml-auto px-4 py-2 rounded-xl text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition"
@@ -309,48 +296,6 @@ function App() {
             API_BASE_URL={API_BASE_URL}
           />
         </div>
-      </div>
-    );
-  }
-
-  if (currentScreen === "pension-data" && user?.role === "hr") {
-    return (
-      <div className="min-h-screen bg-gray-900">
-        
-        <div className="bg-gray-800 px-6 py-3 flex gap-4 border-b border-gray-700 print:hidden">
-
-          <button
-            onClick={() => setCurrentScreen("hr-dashboard")}
-            className="px-4 py-2 rounded-xl text-sm font-bold bg-gray-700 text-gray-300 hover:bg-blue-600 hover:text-white transition"
-          >
-            🏢 ሰራተኛ መመዝገቢያ
-          </button>
-
-          <button
-            onClick={() => setCurrentScreen("hr-print-cart")}
-            className="px-4 py-2 rounded-xl text-sm font-bold bg-gray-700 text-gray-300 hover:bg-blue-600 hover:text-white transition"
-          >
-            🖨️ መታወቂያ ማተሚያ
-          </button>
-
-          <button
-            onClick={() => setCurrentScreen("pension-data")}
-            className="px-4 py-2 rounded-xl text-sm font-bold bg-blue-600 text-white"
-          >
-            💰 የጡረታ መረጃ
-          </button>
-
-          <button
-            onClick={handleLogout}
-            className="ml-auto px-4 py-2 rounded-xl text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition"
-          >
-            🚪 መውጫ
-          </button>
-
-        </div>
-
-        <PensionData />
-
       </div>
     );
   }
