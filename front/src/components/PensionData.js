@@ -234,25 +234,36 @@ const EmployeeDetailForm = ({ employee, onSave, onDelete }) => {
     const labelClass = "block text-lg font-semibold text-gray-800 mb-2";
 
     const fieldGroups = [
-        {
-            title: "የግል መረጃ",
-            fields: [
-                { name: "fullName", label: "ሙሉ ስም (ስከ አያት)", type: "text" },
-                { name: "staffId", label: "ስራ መለያ ቁጥር", type: "text" },
-                { name: "gender", label: "ጾታ",{ name: "gender", label: "ጾታ", type: "select", options: ["ወንድ", "ሴት"] },
-                { name: "birthDate", label: "የትውልድ ዘመን (DD/MM/YYYY)", type: "text" },
-                { name: "nationalId", label: "ብሔራዊ መታወቂያ ቁጥር", type: "text" },
-                { name: "passportNo", label: "ፓስፖርት ቁጥር", type: "text" },
-                { name: "nationality", label: "ዜግነት", type: "text" },
-                { name: "tinNo", label: "ግብር ከፋይ ቁጥር (TIN)", type: "text" },
-                { name: "bankAcc", label: "የባንክ ሂሳብ ቁጥር", type: "text" },
-                { name: "pensionNo", label: "የጡረታ መለያ ቁጥር", type: "text" },
-                { name: "maritalStatus", label: "የጋብቻ ሁኔታ", type: "select", options: ["ነጠላ", "ያገባ", "የፈታ", "ባል የሞተባት/ት"] },
-                { name: "address", label: "አድራሻ", type: "text" },
-                { name: "phone", label: "ስልክ ቁጥር", type: "text" },
-                { name: "email", label: "ኢሜይል", type: "email" },
-            ]
-        },
+       const fieldGroups = [
+    {
+        title: "የግል መረጃ",
+        fields: [
+            { name: "fullName", label: "ሙሉ ስም (ስከ አያት)", type: "text" },
+            { name: "staffId", label: "ስራ መለያ ቁጥር", type: "text" },
+            { 
+                name: "gender", 
+                label: "ጾታ", 
+                type: "select", 
+                options: ["ወንድ", "ሴት"] 
+            },
+            { name: "birthDate", label: "የትውልድ ዘመን (DD/MM/YYYY)", type: "text" },
+            { name: "nationalId", label: "ብሔራዊ መታወቂያ ቁጥር", type: "text" },
+            { name: "passportNo", label: "ፓስፖርት ቁጥር", type: "text" },
+            { name: "nationality", label: "ዜግነት", type: "text" },
+            { name: "tinNo", label: "ግብር ከፋይ ቁጥር (TIN)", type: "text" },
+            { name: "bankAcc", label: "የባንክ ሂሳብ ቁጥር", type: "text" },
+            { name: "pensionNo", label: "የጡረታ መለያ ቁጥር", type: "text" },
+            { 
+                name: "maritalStatus", 
+                label: "የጋብቻ ሁኔታ", 
+                type: "select", 
+                options: ["ነጠላ", "ያገባ", "የፈታ", "ባል የሞተባት/ት"] 
+            },
+            { name: "address", label: "አድራሻ", type: "text" },
+            { name: "phone", label: "ስልክ ቁጥር", type: "text" },
+            { name: "email", label: "ኢሜይል", type: "email" },
+        ]
+    },
         {
             title: "የአገልግሎት እና የጡረታ መረጃ",
             fields: [
