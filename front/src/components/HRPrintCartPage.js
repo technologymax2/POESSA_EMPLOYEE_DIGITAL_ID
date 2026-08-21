@@ -400,18 +400,32 @@ function HRPrintCartPage({ handleLogout }) {
                                 <div className="w-20 h-20 rounded-xl p-0.5 bg-gradient-to-tr from-[#d4af37] to-blue-400 shadow-md shrink-0">
                                   <img src={emp.imageUrl || 'https://via.placeholder.com/120'} alt={emp.nameEng} className="w-full h-full object-cover rounded-lg bg-white" />
                                 </div>
-                                <div className="space-y-0.5">
-                                  <h3 className="text-[14px] font-black text-white leading-tight">{emp.nameAmh}</h3>
-                                  <h3 className="text-[11px] font-bold text-gray-200 leading-tight">{emp.nameEng}</h3>
-                                  <p className="text-[10px] text-[#d4af37] font-bold">{emp.positionAmh}</p>
-                                  <div className="text-[9.5px] font-semibold text-gray-200 mt-0.5">
-                                    <div>            
-                                    <span className="text-gray-400 font-medium">Branch/ቅርንጫፍ:</span>
-                         <span className="text-white">{emp.branchEng || '-'}</span>/
-                        <span className="text-white">{emp.branchAmh || '-'}</span>
-                                  </div>
-                              
-                              </div>
+                               <div className="space-y-0.5">
+  <h3 className="text-[14px] font-black text-white leading-tight">
+    {emp.nameAmh}
+  </h3>
+
+  <h3 className="text-[11px] font-bold text-gray-200 leading-tight">
+    {emp.nameEng}
+  </h3>
+
+  <p className="text-[10px] text-[#d4af37] font-bold">
+    {emp.positionAmh}
+  </p>
+
+  <div className="text-[9.5px] font-semibold text-gray-200 mt-0.5">
+    <span className="text-gray-400 font-medium">
+      Branch/ቅርንጫፍ:
+    </span>{" "}
+    <span className="text-white">
+      {emp.branchEng || "-"}
+    </span>
+    {" / "}
+    <span className="text-white">
+      {emp.branchAmh || "-"}
+    </span>
+  </div>
+</div>
 
                               <div className="flex flex-col items-center bg-black/30 p-2 rounded-xl border border-[#d4af37]/30 shrink-0">
                                 <div className="bg-white p-1.5 rounded">
