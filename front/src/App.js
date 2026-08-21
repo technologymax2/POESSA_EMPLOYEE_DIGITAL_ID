@@ -1,21 +1,21 @@
-// App.js
+// App.js - የተሟላ እና ትክክለኛ ኮድ
 import React, { useState, useEffect, useCallback } from "react";
-import { Routes, Route, Link, useNavigate } from "react-router-dom"; // Router አባላትን አስገባ
+import { Routes, Route, Link, useNavigate, useLocation } from "react-router-dom"; 
 
-// ዋና ዋና ገጾች
+// ዋና ዋና ገጾች - ሁሉም በትክክል መግባታቸውን ያረጋግጡ
 import Login from "./components/Login";
 import AdminDashboard from "./components/AdminDashboard";
 import HrDashboard from "./components/HrDashboard";
 import HRPrintCartPage from "./components/HRPrintCartPage";
 import Footer from "./components/Footer";
-// አዲሱ ገጽ (በPensionData.js ውስጥ እንዳለው ስም አስቀምጠው)
-import PensionData from "./PensionData"; 
+import PensionData from "./PensionData"; // አዲሱ የጡረታ ገጽ
 
-import logoImg from "./logo.jpg";
+import logoImg from "./logo.jpg"; // የሎጎ ፋይል መኖር አለበት
 
 function App() {
   const API_BASE_URL = process.env.REACT_APP_API_URL || "https://poessa-employee-digital-id.onrender.com";
-  const navigate = useNavigate(); // የገጽ መቀየሪያ መንጠቆ
+  const navigate = useNavigate();
+  const location = useLocation(); // የትኛዉ ገጽ ላይ እንዳለን ለማወቅ
 
   // --- Auth State ---
   const [user, setUser] = useState(null);
@@ -28,22 +28,15 @@ function App() {
   const [adminAddStatus, setAdminAddStatus] = useState("");
   const [projects, setProjects] = useState([]);
 
-  // --- Effects ---
-  useEffect(() => {
-    const path = window.location.pathname;
-    // የድሮውን የአሰሳ አመክንዮ ወደ አዲሱ Router አዘምን
-    if (path.includes("/verify/")) {
-      // ወደ ቬሪፋይ ገጽ ቀይር (በዚህ ኮድ አወቃቀር ይህንን በRoute ውስጥ እንይዘዋለን)
-    }
-  }, []);
-
   // --- Fetch Functions ---
   const fetchMessages = useCallback(async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/admin/messages`);
       const data = await res.json();
       if (data.success) setAdminMessages(data.messages);
-    } catch (err) console.error(err);
+    } catch (err) {
+      console.error("መልእክቶችን ማምጣት አልተቻለም:", err);
+    }
   }, [API_BASE_URL]);
 
   useEffect(() => {
@@ -59,7 +52,7 @@ function App() {
         else setProjects([]);
       })
       .catch((err) => {
-        console.error("አልተቻለም", err);
+        console.error("ፕሮጀክቶችን ማምጣት አልተቻለም", err);
         setProjects([]);
       });
   }, [API_BASE_URL]);
@@ -67,7 +60,8 @@ function App() {
   // --- Handlers ---
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
-    const url = window.location.pathname.includes("login") ? "/api/auth/login" : "/api/auth/signup"; // ከcurrentScreen ይልቅ pathname ተጠቀም
+    const isLogin = location.pathname.includes("login");
+    const url = isLogin ? "/api/auth/login" : "/api/auth/signup";
     try {
       const response = await fetch(`${API_BASE_URL}${url}`, {
         method: "POST",
@@ -76,24 +70,42 @@ function App() {
       });
       const data = await response.json();
       if (response.ok && data.success) {
-        if (url.includes("login")) {
+        if (isLogin) {
           setUser(data.user);
-          // በተጠቃሚ ሚና መሰረት አቅጣጫ አቀይር
           if (data.user.role === "admin") navigate("/admin-dashboard");
           else navigate("/hr-dashboard");
         } else {
           setAuthStatus("✅ ምዝገባው ተሳክቷል! አሁን መግባት ይችላሉ።");
-          navigate("/login"); // ወደ መግቢያ ገጽ ቀይር
+          setAuthForm({ name: "", email: "", password: "" });
+          navigate("/login");
         }
-      } else setAuthStatus(data.error || "የግንኙነት ስህተት ተፈጥሯል");
-    } catch {
+      } else {
+        setAuthStatus(data.error || "የግንኙነት ስህተት ተፈጥሯል");
+      }
+    } catch (err) {
       setAuthStatus("የሰርቨር ስህተት!");
+      console.error(err);
     }
   };
 
   const handleLogout = () => {
     setUser(null);
-    navigate("/"); // ወደ መነሻ ገጽ ቀይር
+    navigate("/");
+  };
+
+  // --- Helper Navigation Component (for HR Dashboard) ---
+  const HrNav = ({ current, handleLogout }) => {
+    const hrNavigate = useNavigate();
+    return (
+      <div className="bg-gray-800 px-6 py-3 flex gap-4 border-b border-gray-700 print:hidden">
+        <button onClick={() => hrNavigate("/hr-dashboard")} className={`px-4 py-2 rounded-xl text-sm font-bold transition ${current === "dashboard" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300"}`}>🏢 ሰራተኛ መመዝገቢያ (Dashboard)</button>
+        <button onClick={() => hrNavigate("/hr-print-cart")} className={`px-4 py-2 rounded-xl text-sm font-bold transition ${current === "print-cart" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300"}`}>🖨️ መታወቂያ ማተሚያ ጋሪ (Print Cart)</button>
+        {/* --- አዲስ አገናኝ ወደ ጡረታ ገጽ --- */}
+        <button onClick={() => hrNavigate("/pension-data")} className={`px-4 py-2 rounded-xl text-sm font-bold transition bg-blue-800 text-white hover:bg-blue-900`}>📊 የጡረታ አበል ማሻሻያ</button>
+
+        <button onClick={handleLogout} className="ml-auto px-4 py-2 rounded-xl text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition">🚪 መውጫ (Logout)</button>
+      </div>
+    );
   };
 
   // --- ROUTES ---
@@ -112,10 +124,10 @@ function App() {
             </button>
           ) : (
             <>
-              <Link to="/login" className="px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition">
+              <Link to="/login" className={`px-4 py-2 text-sm font-medium rounded-lg transition ${location.pathname === "/login" ? "bg-blue-50 text-blue-700" : "text-blue-600 border border-blue-600 hover:bg-blue-50"}`}>
                 Login
               </Link>
-              <Link to="/signup" className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+              <Link to="/signup" className={`px-4 py-2 text-sm font-medium rounded-lg transition ${location.pathname === "/signup" ? "bg-blue-700 text-white" : "text-white bg-blue-600 hover:bg-blue-700"}`}>
                 Signup
               </Link>
             </>
@@ -165,7 +177,7 @@ function App() {
               </div>
             </div>
           } />
-           <Route path="/signup" element={
+          <Route path="/signup" element={
             <div className="flex-grow flex items-center justify-center px-4 py-8">
               <div className="w-full max-w-md">
                 <Login authMode="signup" handleAuthChange={(e) => setAuthForm({ ...authForm, [e.target.name]: e.target.value })} handleAuthSubmit={handleAuthSubmit} authStatus={authStatus} logoImg={logoImg} />
@@ -176,17 +188,17 @@ function App() {
           {/* Admin Dashboard */}
           <Route path="/admin-dashboard" element={
             user?.role === "admin" ? (
-              <AdminDashboard user={user} handleLogout={handleLogout} adminMessages={adminMessages} fetchMessages={fetchMessages} newAdminForm={newAdminForm} handleNewAdminChange={(e) => setNewAdminForm({ ...newAdminForm, [e.target.name]: e.target.value })} handleAddAdminSubmit={async (e) => { e.preventDefault(); const res = await fetch(`${API_BASE_URL}/api/admin/add-admin`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newAdminForm), }); const data = await res.json(); if (data.success) { setAdminAddStatus("✅ አድሚን ተፈጥሯል!"); setNewAdminForm({ name: "", email: "", password: "" }); } else setAdminAddStatus(data.error); }} adminAddStatus={adminAddStatus} API_BASE_URL={API_BASE_URL} handleDeleteMessage={async (id) => { if (window.confirm("ማጥፋት ይፈልጋሉ?")) { await fetch(`${API_BASE_URL}/api/admin/messages/${id}`, { method: "DELETE", }); fetchMessages(); } }} projects={projects} setProjects={setProjects} />
+              <AdminDashboard user={user} handleLogout={handleLogout} adminMessages={adminMessages} fetchMessages={fetchMessages} newAdminForm={newAdminForm} handleNewAdminChange={(e) => setNewAdminForm({ ...newAdminForm, [e.target.name]: e.target.value })} handleAddAdminSubmit={async (e) => { e.preventDefault(); const res = await fetch(`${API_BASE_URL}/api/admin/add-admin`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newAdminForm), }); const data = await res.json(); if (data.success) { setAdminAddStatus("✅ አድሚን ተፈጥሯል!"); setNewAdminForm({ name: "", email: "", password: "" }); setTimeout(() => setAdminAddStatus(""), 3000); } else setAdminAddStatus(data.error); }} adminAddStatus={adminAddStatus} API_BASE_URL={API_BASE_URL} handleDeleteMessage={async (id) => { if (window.confirm("ማጥፋት ይፈልጋሉ?")) { await fetch(`${API_BASE_URL}/api/admin/messages/${id}`, { method: "DELETE", }); fetchMessages(); } }} projects={projects} setProjects={setProjects} />
             ) : (
               <div className="p-10 text-center text-xl text-red-600">ፈቃድ የለዎትም! እባክዎ ይግቡ።</div>
             )
           } />
 
-           {/* HR Dashboard & Print Cart (አሁን በRoute ይከፈላሉ) */}
+          {/* HR Dashboard & Print Cart */}
           <Route path="/hr-dashboard" element={
             user?.role === "hr" ? (
               <div className="flex flex-col min-h-screen bg-gray-900">
-                 <HrNav current="dashboard" handleLogout={handleLogout} />
+                <HrNav current="dashboard" handleLogout={handleLogout} />
                 <div className="flex-grow"><HrDashboard user={user} handleLogout={handleLogout} API_BASE_URL={API_BASE_URL} /></div>
               </div>
             ) : <div className="p-10 text-center text-xl text-red-600">ፈቃድ የለዎትም! እባክዎ ይግቡ።</div>
@@ -194,21 +206,21 @@ function App() {
           <Route path="/hr-print-cart" element={
             user?.role === "hr" ? (
               <div className="flex flex-col min-h-screen bg-gray-900">
-                 <HrNav current="print-cart" handleLogout={handleLogout} />
+                <HrNav current="print-cart" handleLogout={handleLogout} />
                 <div className="flex-grow"><HRPrintCartPage handleLogout={handleLogout} API_BASE_URL={API_BASE_URL} /></div>
               </div>
             ) : <div className="p-10 text-center text-xl text-red-600">ፈቃድ የለዎትም! እባክዎ ይግቡ።</div>
           } />
 
-           {/* የቬሪፋይ እይታ */}
-           <Route path="/verify/:id" element={
-               <HrDashboard user={{ role: "hr", name: "Guest Verifier" }} handleLogout={() => navigate("/")} API_BASE_URL={API_BASE_URL} />
-           } />
+          {/* የቬሪፋይ እይታ */}
+          <Route path="/verify/:id" element={
+            <HrDashboard user={{ role: "hr", name: "Guest Verifier" }} handleLogout={() => navigate("/")} API_BASE_URL={API_BASE_URL} />
+          } />
 
-           {/* --- አዲሱ የጡረታ መረጃ ገጽ --- */}
-           <Route path="/pension-data" element={
-             <PensionData /> // በቀጥታ በRoute ውስጥ ይጨመራል
-           } />
+          {/* --- አዲሱ የጡረታ መረጃ ገጽ --- */}
+          <Route path="/pension-data" element={
+            <PensionData /> // ይህ ገጽ በPensionData.js ውስጥ መገለጽ አለበት
+          } />
 
         </Routes>
       </main>
@@ -216,21 +228,6 @@ function App() {
       <Footer />
     </div>
   );
-};
-
-// --- Helper Navigation Component ---
-const HrNav = ({ current, handleLogout }) => {
-    const navigate = useNavigate();
-    return (
-        <div className="bg-gray-800 px-6 py-3 flex gap-4 border-b border-gray-700 print:hidden">
-            <button onClick={() => navigate("/hr-dashboard")} className={`px-4 py-2 rounded-xl text-sm font-bold transition ${current === "dashboard" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300"}`}>🏢 ሰራተኛ መመዝገቢያ (Dashboard)</button>
-            <button onClick={() => navigate("/hr-print-cart")} className={`px-4 py-2 rounded-xl text-sm font-bold transition ${current === "print-cart" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300"}`}>🖨️ መታወቂያ ማተሚያ ጋሪ (Print Cart)</button>
-             {/* --- አዲስ አገናኝ ወደ ጡረታ ገጽ --- */}
-             <button onClick={() => navigate("/pension-data")} className={`px-4 py-2 rounded-xl text-sm font-bold transition bg-blue-800 text-white hover:bg-blue-900`}>📊 የጡረታ አበል ማሻሻያ</button>
-
-            <button onClick={handleLogout} className="ml-auto px-4 py-2 rounded-xl text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition">🚪 መውጫ (Logout)</button>
-        </div>
-    );
-};
+}
 
 export default App;
