@@ -1,66 +1,62 @@
+// App.js
 import React, { useState, useEffect, useCallback } from "react";
+import { Routes, Route, Link, useNavigate } from "react-router-dom"; // Router አባላትን አስገባ
+
+// ዋና ዋና ገጾች
 import Login from "./components/Login";
 import AdminDashboard from "./components/AdminDashboard";
 import HrDashboard from "./components/HrDashboard";
 import HRPrintCartPage from "./components/HRPrintCartPage";
 import Footer from "./components/Footer";
+// አዲሱ ገጽ (በPensionData.js ውስጥ እንዳለው ስም አስቀምጠው)
+import PensionData from "./PensionData"; 
+
 import logoImg from "./logo.jpg";
 
 function App() {
   const API_BASE_URL = process.env.REACT_APP_API_URL || "https://poessa-employee-digital-id.onrender.com";
-  const [currentScreen, setCurrentScreen] = useState("home");
+  const navigate = useNavigate(); // የገጽ መቀየሪያ መንጠቆ
+
+  // --- Auth State ---
   const [user, setUser] = useState(null);
-  const [authForm, setAuthForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [authForm, setAuthForm] = useState({ name: "", email: "", password: "" });
   const [authStatus, setAuthStatus] = useState("");
+
+  // --- Admin Data State ---
   const [adminMessages, setAdminMessages] = useState([]);
-  const [newAdminForm, setNewAdminForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [newAdminForm, setNewAdminForm] = useState({ name: "", email: "", password: "" });
   const [adminAddStatus, setAdminAddStatus] = useState("");
   const [projects, setProjects] = useState([]);
 
+  // --- Effects ---
   useEffect(() => {
     const path = window.location.pathname;
+    // የድሮውን የአሰሳ አመክንዮ ወደ አዲሱ Router አዘምን
     if (path.includes("/verify/")) {
-      setCurrentScreen("verify-view");
+      // ወደ ቬሪፋይ ገጽ ቀይር (በዚህ ኮድ አወቃቀር ይህንን በRoute ውስጥ እንይዘዋለን)
     }
   }, []);
 
+  // --- Fetch Functions ---
   const fetchMessages = useCallback(async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/admin/messages`);
       const data = await res.json();
-      if (data.success) {
-        setAdminMessages(data.messages);
-      }
-    } catch (err) {
-      console.error(err);
-    }
+      if (data.success) setAdminMessages(data.messages);
+    } catch (err) console.error(err);
   }, [API_BASE_URL]);
 
   useEffect(() => {
-    if (user && user.role === "admin") {
-      fetchMessages();
-    }
+    if (user && user.role === "admin") fetchMessages();
   }, [user, fetchMessages]);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/projects`)
       .then((res) => res.json())
       .then((data) => {
-        if (data && Array.isArray(data.projects)) {
-          setProjects(data.projects);
-        } else if (Array.isArray(data)) {
-          setProjects(data);
-        } else {
-          setProjects([]);
-        }
+        if (data && Array.isArray(data.projects)) setProjects(data.projects);
+        else if (Array.isArray(data)) setProjects(data);
+        else setProjects([]);
       })
       .catch((err) => {
         console.error("አልተቻለም", err);
@@ -68,9 +64,10 @@ function App() {
       });
   }, [API_BASE_URL]);
 
+  // --- Handlers ---
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
-    const url = currentScreen === "login" ? "/api/auth/login" : "/api/auth/signup";
+    const url = window.location.pathname.includes("login") ? "/api/auth/login" : "/api/auth/signup"; // ከcurrentScreen ይልቅ pathname ተጠቀም
     try {
       const response = await fetch(`${API_BASE_URL}${url}`, {
         method: "POST",
@@ -79,22 +76,16 @@ function App() {
       });
       const data = await response.json();
       if (response.ok && data.success) {
-        if (currentScreen === "login") {
+        if (url.includes("login")) {
           setUser(data.user);
-          if (data.user.role === "admin") {
-            setCurrentScreen("admin-dashboard");
-          } else if (data.user.role === "hr") {
-            setCurrentScreen("hr-dashboard");
-          } else {
-            setCurrentScreen("hr-dashboard");
-          }
+          // በተጠቃሚ ሚና መሰረት አቅጣጫ አቀይር
+          if (data.user.role === "admin") navigate("/admin-dashboard");
+          else navigate("/hr-dashboard");
         } else {
           setAuthStatus("✅ ምዝገባው ተሳክቷል! አሁን መግባት ይችላሉ።");
-          setCurrentScreen("login");
+          navigate("/login"); // ወደ መግቢያ ገጽ ቀይር
         }
-      } else {
-        setAuthStatus(data.error || "የግንኙነት ስህተት ተፈጥሯል");
-      }
+      } else setAuthStatus(data.error || "የግንኙነት ስህተት ተፈጥሯል");
     } catch {
       setAuthStatus("የሰርቨር ስህተት!");
     }
@@ -102,205 +93,144 @@ function App() {
 
   const handleLogout = () => {
     setUser(null);
-    setCurrentScreen("home");
+    navigate("/"); // ወደ መነሻ ገጽ ቀይር
   };
 
-  if (currentScreen === "verify-view") {
-    return (
-      <HrDashboard 
-        user={{ role: "hr", name: "Guest Verifier" }} 
-        handleLogout={() => setCurrentScreen("home")} 
-        API_BASE_URL={API_BASE_URL} 
-      />
-    );
-  }
-
-  if (currentScreen === "home") {
-    return (
-      <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-between">
-        <nav className="w-full bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentScreen("home")}>
-            <img src={logoImg} alt="Logo" className="w-10 h-10 rounded-full object-cover shadow" />
-            <span className="text-xl font-bold text-blue-600">POESSA</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => { setAuthStatus(""); setCurrentScreen("login"); }} 
-              className="px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition"
-            >
-              Login
+  // --- ROUTES ---
+  return (
+    <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-between">
+      {/* ይህ Nav ለሁሉም ገጽ ይጋራል */}
+      <nav className="w-full bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+        <Link to="/" className="flex items-center gap-3">
+          <img src={logoImg} alt="Logo" className="w-10 h-10 rounded-full object-cover shadow" />
+          <span className="text-xl font-bold text-blue-600">POESSA</span>
+        </Link>
+        <div className="flex items-center gap-3">
+          {user ? (
+            <button onClick={handleLogout} className="px-4 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50 transition">
+              Logout
             </button>
-            <button 
-              onClick={() => { setAuthStatus(""); setCurrentScreen("signup"); }} 
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
-            >
-              Signup
-            </button>
-          </div>
-        </nav>
-        <header className="max-w-4xl mx-auto px-6 py-16 text-center">
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-gray-900 mb-6">
-            እንኳን ወደ <span className="text-blue-600">የ/ግ/ድ/ሰ/ማ/ዋ/አ</span> በሰላም መጡ!
-          </h1>
-          <p className="text-lg text-gray-600">የሰራተኞች ዲጂታል መታወቂያ እና ማስተዋቂያ ሰሌዳ ማስተዳደሪያ ስርዓት</p>
-        </header>
-        <main className="max-w-7xl mx-auto px-6 py-10 w-full flex-grow">
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">መለክቶች</h2>
-          {projects.length === 0 ? (
-            <p className="text-center text-gray-500">ምንም መረጃ የለም</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {projects.map((p) => (
-                <div key={p._id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition border border-gray-100 flex flex-col">
-                  <a href={p.link || "#"} target="_blank" rel="noopener noreferrer" className="overflow-hidden block">
-                    <img src={p.imageUrl} alt={p.title} className="w-full h-48 object-cover hover:scale-105 transition duration-300" />
-                  </a>
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold text-gray-800">{p.title}</h3>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <>
+              <Link to="/login" className="px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition">
+                Login
+              </Link>
+              <Link to="/signup" className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                Signup
+              </Link>
+            </>
           )}
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (currentScreen === "login" || currentScreen === "signup") {
-    return (
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
-        <nav className="w-full bg-white shadow-sm px-6 py-4">
-          <button onClick={() => setCurrentScreen("home")} className="text-blue-600 font-semibold hover:underline">
-            ⬅ ወደ ዋናው ገጽ ይመለሱ
-          </button>
-        </nav>
-        <div className="flex-grow flex items-center justify-center px-4 py-8">
-          <div className="w-full max-w-md">
-            <Login 
-              authMode={currentScreen} 
-              setAuthMode={setCurrentScreen} 
-              authForm={authForm} 
-              handleAuthChange={(e) => setAuthForm({ ...authForm, [e.target.name]: e.target.value })} 
-              handleAuthSubmit={handleAuthSubmit} 
-              authStatus={authStatus} 
-              logoImg={logoImg} 
-            />
-          </div>
         </div>
-      </div>
-    );
-  }
+      </nav>
 
-  if (currentScreen === "admin-dashboard" && user?.role === "admin") {
-    return (
-      <AdminDashboard 
-        user={user} 
-        handleLogout={handleLogout} 
-        adminMessages={adminMessages} 
-        fetchMessages={fetchMessages} 
-        newAdminForm={newAdminForm} 
-        handleNewAdminChange={(e) => setNewAdminForm({ ...newAdminForm, [e.target.name]: e.target.value })} 
-        handleAddAdminSubmit={async (e) => { 
-          e.preventDefault(); 
-          const res = await fetch(`${API_BASE_URL}/api/admin/add-admin`, { 
-            method: "POST", 
-            headers: { "Content-Type": "application/json" }, 
-            body: JSON.stringify(newAdminForm), 
-          }); 
-          const data = await res.json(); 
-          if (data.success) { 
-            setAdminAddStatus("✅ አድሚን ተፈጥሯል!"); 
-            setNewAdminForm({ name: "", email: "", password: "" }); 
-          } else { 
-            setAdminAddStatus(data.error); 
-          } 
-        }} 
-        adminAddStatus={adminAddStatus} 
-        API_BASE_URL={API_BASE_URL} 
-        handleDeleteMessage={async (id) => { 
-          if (window.confirm("ማጥፋት ይፈልጋሉ?")) { 
-            await fetch(`${API_BASE_URL}/api/admin/messages/${id}`, { 
-              method: "DELETE", 
-            }); 
-            fetchMessages(); 
-          } 
-        }} 
-        projects={projects} 
-        setProjects={setProjects} 
-      />
-    );
-  }
+      <main className="flex-grow">
+        {/* የገጽ መንገዶች (Routes) */}
+        <Routes>
+          {/* መነሻ ገጽ (Home) */}
+          <Route path="/" element={
+            <>
+              <header className="max-w-4xl mx-auto px-6 py-16 text-center">
+                <h1 className="text-3xl sm:text-5xl font-extrabold text-gray-900 mb-6">
+                  ወደ <span className="text-blue-600">የ/ግ/ድ/ሰ/ማ/ዋ/አ</span> እንኳን በሰላም መጡ!
+                </h1>
+                <p className="text-lg text-gray-600">የሰራተኞች ዲጂታል መታወቂያ እና ማስተዋቂያ ሰሌዳ ማስተዳደሪያ ስርዓት</p>
+              </header>
+              <div className="max-w-7xl mx-auto px-6 py-10 w-full">
+                <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">መለክቶች</h2>
+                {projects.length === 0 ? (
+                  <p className="text-center text-gray-500">ምንም መረጃ የለም</p>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {projects.map((p) => (
+                      <div key={p._id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition border border-gray-100 flex flex-col">
+                        <a href={p.link || "#"} target="_blank" rel="noopener noreferrer" className="overflow-hidden block">
+                          <img src={p.imageUrl} alt={p.title} className="w-full h-48 object-cover hover:scale-105 transition duration-300" />
+                        </a>
+                        <div className="p-5">
+                          <h3 className="text-lg font-bold text-gray-800">{p.title}</h3>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </>
+          } />
 
-  if (currentScreen === "hr-dashboard" && user?.role === "hr") {
+          {/* መግቢያ/ምዝገባ ገጽ */}
+          <Route path="/login" element={
+            <div className="flex-grow flex items-center justify-center px-4 py-8">
+              <div className="w-full max-w-md">
+                <Login authMode="login" handleAuthChange={(e) => setAuthForm({ ...authForm, [e.target.name]: e.target.value })} handleAuthSubmit={handleAuthSubmit} authStatus={authStatus} logoImg={logoImg} />
+              </div>
+            </div>
+          } />
+           <Route path="/signup" element={
+            <div className="flex-grow flex items-center justify-center px-4 py-8">
+              <div className="w-full max-w-md">
+                <Login authMode="signup" handleAuthChange={(e) => setAuthForm({ ...authForm, [e.target.name]: e.target.value })} handleAuthSubmit={handleAuthSubmit} authStatus={authStatus} logoImg={logoImg} />
+              </div>
+            </div>
+          } />
+
+          {/* Admin Dashboard */}
+          <Route path="/admin-dashboard" element={
+            user?.role === "admin" ? (
+              <AdminDashboard user={user} handleLogout={handleLogout} adminMessages={adminMessages} fetchMessages={fetchMessages} newAdminForm={newAdminForm} handleNewAdminChange={(e) => setNewAdminForm({ ...newAdminForm, [e.target.name]: e.target.value })} handleAddAdminSubmit={async (e) => { e.preventDefault(); const res = await fetch(`${API_BASE_URL}/api/admin/add-admin`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newAdminForm), }); const data = await res.json(); if (data.success) { setAdminAddStatus("✅ አድሚን ተፈጥሯል!"); setNewAdminForm({ name: "", email: "", password: "" }); } else setAdminAddStatus(data.error); }} adminAddStatus={adminAddStatus} API_BASE_URL={API_BASE_URL} handleDeleteMessage={async (id) => { if (window.confirm("ማጥፋት ይፈልጋሉ?")) { await fetch(`${API_BASE_URL}/api/admin/messages/${id}`, { method: "DELETE", }); fetchMessages(); } }} projects={projects} setProjects={setProjects} />
+            ) : (
+              <div className="p-10 text-center text-xl text-red-600">ፈቃድ የለዎትም! እባክዎ ይግቡ።</div>
+            )
+          } />
+
+           {/* HR Dashboard & Print Cart (አሁን በRoute ይከፈላሉ) */}
+          <Route path="/hr-dashboard" element={
+            user?.role === "hr" ? (
+              <div className="flex flex-col min-h-screen bg-gray-900">
+                 <HrNav current="dashboard" handleLogout={handleLogout} />
+                <div className="flex-grow"><HrDashboard user={user} handleLogout={handleLogout} API_BASE_URL={API_BASE_URL} /></div>
+              </div>
+            ) : <div className="p-10 text-center text-xl text-red-600">ፈቃድ የለዎትም! እባክዎ ይግቡ።</div>
+          } />
+          <Route path="/hr-print-cart" element={
+            user?.role === "hr" ? (
+              <div className="flex flex-col min-h-screen bg-gray-900">
+                 <HrNav current="print-cart" handleLogout={handleLogout} />
+                <div className="flex-grow"><HRPrintCartPage handleLogout={handleLogout} API_BASE_URL={API_BASE_URL} /></div>
+              </div>
+            ) : <div className="p-10 text-center text-xl text-red-600">ፈቃድ የለዎትም! እባክዎ ይግቡ።</div>
+          } />
+
+           {/* የቬሪፋይ እይታ */}
+           <Route path="/verify/:id" element={
+               <HrDashboard user={{ role: "hr", name: "Guest Verifier" }} handleLogout={() => navigate("/")} API_BASE_URL={API_BASE_URL} />
+           } />
+
+           {/* --- አዲሱ የጡረታ መረጃ ገጽ --- */}
+           <Route path="/pension-data" element={
+             <PensionData /> // በቀጥታ በRoute ውስጥ ይጨመራል
+           } />
+
+        </Routes>
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
+// --- Helper Navigation Component ---
+const HrNav = ({ current, handleLogout }) => {
+    const navigate = useNavigate();
     return (
-      <div className="flex flex-col min-h-screen bg-gray-900">
         <div className="bg-gray-800 px-6 py-3 flex gap-4 border-b border-gray-700 print:hidden">
-          <button 
-            onClick={() => setCurrentScreen("hr-dashboard")}
-            className={`px-4 py-2 rounded-xl text-sm font-bold transition ${currentScreen === "hr-dashboard" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300"}`}
-          >
-            🏢 ሰራተኛ መመዝገቢያ (Dashboard)
-          </button>
-          <button 
-            onClick={() => setCurrentScreen("hr-print-cart")}
-            className={`px-4 py-2 rounded-xl text-sm font-bold transition ${currentScreen === "hr-print-cart" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300"}`}
-          >
-            🖨️ መታወቂያ ማተሚያ ጋሪ (Print Cart)
-          </button>
-          <button 
-            onClick={handleLogout}
-            className="ml-auto px-4 py-2 rounded-xl text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition"
-          >
-            🚪 መውጫ (Logout)
-          </button>
-        </div>
-        <div className="flex-grow">
-          <HrDashboard 
-            user={user} 
-            handleLogout={handleLogout} 
-            API_BASE_URL={API_BASE_URL} 
-          />
-        </div>
-      </div>
-    );
-  }
+            <button onClick={() => navigate("/hr-dashboard")} className={`px-4 py-2 rounded-xl text-sm font-bold transition ${current === "dashboard" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300"}`}>🏢 ሰራተኛ መመዝገቢያ (Dashboard)</button>
+            <button onClick={() => navigate("/hr-print-cart")} className={`px-4 py-2 rounded-xl text-sm font-bold transition ${current === "print-cart" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300"}`}>🖨️ መታወቂያ ማተሚያ ጋሪ (Print Cart)</button>
+             {/* --- አዲስ አገናኝ ወደ ጡረታ ገጽ --- */}
+             <button onClick={() => navigate("/pension-data")} className={`px-4 py-2 rounded-xl text-sm font-bold transition bg-blue-800 text-white hover:bg-blue-900`}>📊 የጡረታ አበል ማሻሻያ</button>
 
-  if (currentScreen === "hr-print-cart" && user?.role === "hr") {
-    return (
-      <div className="flex flex-col min-h-screen bg-gray-900">
-        <div className="bg-gray-800 px-6 py-3 flex gap-4 border-b border-gray-700 print:hidden">
-          <button 
-            onClick={() => setCurrentScreen("hr-dashboard")}
-            className={`px-4 py-2 rounded-xl text-sm font-bold transition ${currentScreen === "hr-dashboard" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300"}`}
-          >
-            🏢 ሰራተኛ መመዝገቢያ (Dashboard)
-          </button>
-          <button 
-            onClick={() => setCurrentScreen("hr-print-cart")}
-            className={`px-4 py-2 rounded-xl text-sm font-bold transition ${currentScreen === "hr-print-cart" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300"}`}
-          >
-            🖨️ መታወቂያ ማተሚያ ጋሪ (Print Cart)
-          </button>
-          <button 
-            onClick={handleLogout}
-            className="ml-auto px-4 py-2 rounded-xl text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition"
-          >
-            🚪 መውጫ (Logout)
-          </button>
+            <button onClick={handleLogout} className="ml-auto px-4 py-2 rounded-xl text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition">🚪 መውጫ (Logout)</button>
         </div>
-        <div className="flex-grow">
-          <HRPrintCartPage 
-            handleLogout={handleLogout} 
-            API_BASE_URL={API_BASE_URL}
-          />
-        </div>
-      </div>
     );
-  }
-
-  return null;
-}
+};
 
 export default App;
